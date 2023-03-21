@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,7 +26,8 @@ fun SplashScreen(
     onPopBackStack: () -> Unit,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(viewModel) {
+    val context = LocalContext.current
+    LaunchedEffect(viewModel, context) {
         viewModel.authResults.collect { result ->
             when (result) {
                 is AuthResult.Authorized -> {
@@ -33,14 +35,12 @@ fun SplashScreen(
                     onNavigate(Destination.Home.route)
                 }
                 is AuthResult.Unauthorized -> {
-                    snackbarHostState.showSnackbar(
-                        message = "You're not authorized",
-                        duration = SnackbarDuration.Short
-                    )
+                    onPopBackStack()
+                    onNavigate(Destination.Login.route)
                 }
                 is AuthResult.UnknownError -> {
                     snackbarHostState.showSnackbar(
-                        message = "An unknown error occurred",
+                        message = context.getString(R.string.an_unknown_error_occurred),
                         duration = SnackbarDuration.Short
                     )
                 }

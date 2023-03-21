@@ -35,7 +35,8 @@ fun Navigation(
             LoginScreen(
                 modifier = modifier.fillMaxSize(),
                 snackbarHostState = snackbarHostState,
-                onNavigate = navHostController::navigate
+                onNavigate = navHostController::navigate,
+                onPopBackStack = navHostController::popBackStack
             )
         }
         composable(Destination.Register.route) {

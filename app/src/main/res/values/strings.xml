@@ -4,4 +4,6 @@
     <string name="login">Login</string>
     <string name="night_logo">Night Logo</string>
     <string name="logo">Logo</string>
+    <string name="an_unknown_error_occurred">An unknown error occurred</string>
+    <string name="fail_authorized">Password does not match email. </string>
 </resources>
