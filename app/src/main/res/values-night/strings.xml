@@ -3,4 +3,9 @@
     <string name="home">Home</string>
     <string name="login">Login</string>
     <string name="an_unknown_error_occurred">An unknown error occurred</string>
+    <string name="no_account_yet">No account yet?</string>
+    <string name="register">Register</string>
+    <string name="username">Username</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
 </resources>

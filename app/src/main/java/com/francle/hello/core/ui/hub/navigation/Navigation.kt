@@ -26,7 +26,6 @@ fun Navigation(
         composable(Destination.Splash.route) {
             SplashScreen(
                 modifier = modifier.fillMaxSize(),
-                snackbarHostState = snackbarHostState,
                 onNavigate = navHostController::navigate,
                 onPopBackStack = navHostController::popBackStack
             )
@@ -44,7 +43,7 @@ fun Navigation(
                 modifier = modifier.fillMaxSize(),
                 snackbarHostState = snackbarHostState,
                 onNavigate = navHostController::navigate,
-                onNavigateUp = navHostController::navigateUp
+                onPopBackStack = navHostController::popBackStack
             )
         }
         composable(Destination.Home.route) {

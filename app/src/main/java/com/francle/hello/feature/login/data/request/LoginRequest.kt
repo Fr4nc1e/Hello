@@ -1,6 +1,6 @@
 package com.francle.hello.feature.login.data.request
 
-data class AuthRequest(
+data class LoginRequest(
     val email: String,
     val password: String
 )

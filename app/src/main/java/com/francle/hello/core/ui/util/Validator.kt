@@ -17,6 +17,16 @@ object Validator {
         }
     }
 
+    fun validateUsername(username: String): InputError? {
+        return when {
+            username.trim().isBlank() -> {
+                InputError.BlankError
+            }
+
+            else -> null
+        }
+    }
+
     fun validatePassword(password: String): InputError? {
         return when {
             password.trim().isBlank() -> {
