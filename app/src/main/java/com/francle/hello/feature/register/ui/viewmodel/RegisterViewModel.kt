@@ -6,7 +6,7 @@ import com.francle.hello.core.data.util.AuthResult
 import com.francle.hello.core.ui.util.TextState
 import com.francle.hello.core.ui.util.Validator
 import com.francle.hello.feature.register.domain.repository.RegisterRepository
-import com.francle.hello.feature.register.event.RegisterEvent
+import com.francle.hello.feature.register.ui.presentation.event.RegisterEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel

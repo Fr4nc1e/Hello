@@ -1,4 +1,4 @@
-package com.francle.hello.feature.login.event
+package com.francle.hello.feature.login.ui.presentation.event
 
 sealed class LoginEvent {
     data class InputEmail(val emailText: String) : LoginEvent()

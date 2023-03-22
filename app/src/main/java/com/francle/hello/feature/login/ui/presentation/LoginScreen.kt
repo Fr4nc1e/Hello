@@ -38,7 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.francle.hello.R
 import com.francle.hello.core.data.util.AuthResult
 import com.francle.hello.core.ui.hub.navigation.destination.Destination
-import com.francle.hello.feature.login.event.LoginEvent
+import com.francle.hello.feature.login.ui.presentation.event.LoginEvent
 import com.francle.hello.feature.login.ui.viewmodel.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

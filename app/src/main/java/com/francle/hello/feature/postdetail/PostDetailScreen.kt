@@ -1,16 +1,14 @@
-package com.francle.hello.feature.home.ui.presentation
+package com.francle.hello.feature.postdetail
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun HomeScreen(
+fun PostDetailScreen(
     modifier: Modifier,
     snackbarHostState: SnackbarHostState,
-    onNavigate: (String) -> Unit
+    onNavigate: (String) -> Unit,
+    onNavigateUp: () -> Unit
 ) {
-    Column(modifier = modifier) {
-    }
 }

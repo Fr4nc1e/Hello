@@ -1,4 +1,4 @@
-package com.francle.hello.feature.register.event
+package com.francle.hello.feature.register.ui.presentation.event
 
 sealed class RegisterEvent {
     data class InputEmail(val emailText: String) : RegisterEvent()
