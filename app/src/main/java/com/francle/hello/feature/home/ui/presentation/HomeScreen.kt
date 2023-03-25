@@ -1,12 +1,13 @@
 package com.francle.hello.feature.home.ui.presentation
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
@@ -20,6 +21,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.francle.hello.R
+import com.francle.hello.core.ui.hub.navigation.destination.Destination
 import com.francle.hello.core.ui.theme.SpaceSmall
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.PostCard
 import com.francle.hello.feature.home.ui.viewmodel.HomeViewModel
@@ -34,6 +36,7 @@ fun HomeScreen(
 ) {
     val posts = homeViewModel.posts.collectAsState().value
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = modifier
@@ -47,16 +50,17 @@ fun HomeScreen(
             scrollBehavior = scrollBehavior
         )
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
+        Column(
+            modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
         ) {
-            items(posts) { post ->
+            posts.forEach { post ->
                 post?.let {
                     PostCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(SpaceSmall)
-                            .animateContentSize(),
+                            .animateContentSize()
+                            .clickable { onNavigate(Destination.PostDetail.route + "/${it.id}") },
                         post = it,
                         onNavigate = onNavigate
                     )
