@@ -1,5 +1,10 @@
 package com.francle.hello.feature.login.data.response
 
+import com.google.gson.annotations.SerializedName
+
 data class LoginResponse(
-    val message: String
+    @SerializedName("userId")
+    val userId: String,
+    @SerializedName("token")
+    val token: String
 )

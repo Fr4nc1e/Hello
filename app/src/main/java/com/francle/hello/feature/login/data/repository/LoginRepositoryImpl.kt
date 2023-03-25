@@ -23,10 +23,10 @@ class LoginRepositoryImpl(
                     password = password
                 )
             )
-            pref.edit().putString(
-                Constants.KEY_JWT_TOKEN,
-                response.message
-            ).apply()
+            pref.edit()
+                .putString(Constants.KEY_JWT_TOKEN, response.token)
+                .putString(Constants.KEY_USER_ID, response.userId)
+                .apply()
             AuthResult.Authorized()
         } catch (e: HttpException) {
             if (e.code() == 401) {

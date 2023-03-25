@@ -1,4 +1,4 @@
-package com.francle.hello.feature.home.ui.presentation.components.postcard
+package com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -34,6 +36,7 @@ import com.francle.hello.core.ui.theme.SpaceSmall
 
 @Composable
 fun HeadRow(
+    modifier: Modifier,
     profileImageUrl: String?,
     username: String?
 ) {
@@ -42,7 +45,7 @@ fun HeadRow(
     }
 
     Row(
-        modifier = Modifier.fillMaxWidth().padding(SpaceSmall),
+        modifier = modifier.fillMaxWidth().padding(SpaceSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -91,8 +94,24 @@ fun HeadRow(
                 onDismissRequest = { isExpanded.value = isExpanded.value.not() }
             ) {
                 DropdownMenuItem(
-                    text = { /*TODO*/ },
-                    onClick = { /*TODO*/ }
+                    text = { Text(text = stringResource(R.string.share)) },
+                    onClick = { /*TODO: Share the post*/ },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Share,
+                            contentDescription = stringResource(id = R.string.share)
+                        )
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(text = stringResource(id = R.string.delete)) },
+                    onClick = { /*TODO: Delete the post*/ },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = stringResource(id = R.string.delete)
+                        )
+                    }
                 )
             }
         }

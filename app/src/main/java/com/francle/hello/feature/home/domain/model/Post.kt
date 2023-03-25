@@ -5,7 +5,7 @@ data class Post(
     val username: String?,
     val profileImageUrl: String?,
     val postText: String?,
-    val postContentPair: List<PostContentPair>?,
+    val postContentPairs: List<PostContentPair>?,
     val timestamp: Long,
     val likeCount: Int = 0,
     val commentCount: Int = 0,

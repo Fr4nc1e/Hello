@@ -3,6 +3,7 @@ package com.francle.hello.core.di
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.media.MediaMetadataRetriever
 import com.francle.hello.core.data.api.AuthApi
 import com.francle.hello.core.data.repository.AuthRepositoryImpl
 import com.francle.hello.core.domain.repository.AuthRepository
@@ -66,5 +67,11 @@ object CoreModule {
         preferences: SharedPreferences
     ): AuthRepository {
         return AuthRepositoryImpl(api = api, pref = preferences)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetriever(): MediaMetadataRetriever {
+        return MediaMetadataRetriever()
     }
 }

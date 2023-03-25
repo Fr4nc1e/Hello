@@ -14,4 +14,15 @@
     <string name="password">Password</string>
     <string name="profile_image">Profile Image</string>
     <string name="dropdown_menu">Dropdown Menu</string>
+    <string name="share">Share</string>
+    <string name="delete">Delete</string>
+    <string name="post_image">Post Image</string>
+    <string name="post_not_found">Post not found</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="an_unexpected_error_occurred">An unexpected error occurred</string>
+    <string name="no_more_posts">No more posts</string>
+    <string name="play_video">Play Video</string>
+    <string name="preview_image">Preview Image</string>
+    <string name="image_content">Image Content</string>
+    <string name="video_content">Video Content</string>
 </resources>
