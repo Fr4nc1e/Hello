@@ -6,8 +6,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import com.francle.hello.core.ui.theme.SpaceMedium
@@ -19,24 +17,8 @@ import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.com
 @Composable
 fun PostCard(
     modifier: Modifier,
-    post: Post,
-    onNavigate: (String) -> Unit
+    post: Post
 ) {
-    val postContentMap = remember {
-        mutableStateMapOf<String?, List<String?>?>()
-    }
-
-    post.postContentPairs?.forEach { pair ->
-        val fileType = pair.fileName?.substringAfterLast(".") ?: ""
-        if (postContentMap.containsKey(fileType)) {
-            if (postContentMap[fileType]?.contains(pair.postContentUrl) == false) {
-                postContentMap[fileType] = postContentMap[fileType]?.plus(pair.postContentUrl)
-            }
-        } else {
-            postContentMap[fileType] = listOf(pair.postContentUrl)
-        }
-    }
-
     Card(modifier = modifier) {
         HeadRow(
             modifier = Modifier.fillMaxWidth(),
@@ -57,7 +39,7 @@ fun PostCard(
                 .fillMaxWidth()
                 .padding(SpaceSmall)
                 .align(CenterHorizontally),
-            postContentMap = postContentMap
+            postContentPairs = post.postContentPairs
         )
     }
 }

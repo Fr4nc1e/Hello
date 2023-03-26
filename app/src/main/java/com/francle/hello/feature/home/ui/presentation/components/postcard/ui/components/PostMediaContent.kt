@@ -20,95 +20,90 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import coil.compose.AsyncImage
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.francle.hello.R
-import com.francle.hello.core.di.CoreModule
-import com.francle.hello.core.domain.model.VideoItem
 import com.francle.hello.core.ui.theme.IconSizeLarge
 import com.francle.hello.core.ui.theme.SpaceSmall
-import com.google.android.exoplayer2.MediaItem
+import com.francle.hello.feature.home.domain.model.PostContentPair
+import com.francle.hello.feature.home.ui.presentation.event.HomeEvent
+import com.francle.hello.feature.home.ui.viewmodel.HomeViewModel
 
 @Composable
 fun PostMediaContent(
     modifier: Modifier,
-    postContentMap: Map<String?, List<String?>?>
+    postContentPairs: List<PostContentPair>?,
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val retriever = CoreModule.provideRetriever()
-    val mediaItems = mutableListOf<Any>()
-    postContentMap.forEach { (key, values) ->
-        when (key) {
-            in listOf("png", "jpg", "jpeg") -> {
-                values?.let { list ->
-                    mediaItems.addAll(list.filterNotNull())
-                }
-            }
-            "mp4" -> {
-                mediaItems.addAll(
-                    values?.map { url ->
-                        val uri = Uri.parse(url)
-                        VideoItem(
-                            contentUri = uri,
-                            mediaItem = MediaItem.fromUri(uri)
-                        )
-                    }.orEmpty()
-                )
-            }
-        }
-    }
-
+    val retriever = homeViewModel.retriever
     Column(
         modifier = modifier,
         horizontalAlignment = CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        mediaItems.chunked(3).forEach { chunkedItems ->
+        postContentPairs?.chunked(3)?.forEach { chunkedItems ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = CenterVertically
             ) {
                 chunkedItems.forEach {
-                    when (it) {
-                        is String -> {
+                    when (it.fileName?.substringAfterLast(".")) {
+                        "png", "jpg", "jpeg" -> {
                             Box(
                                 modifier = Modifier
                                     .weight(1f, false)
                                     .padding(SpaceSmall),
                                 contentAlignment = Center
                             ) {
-                                AsyncImage(
-                                    model = it,
+                                Image(
+                                    painter = rememberAsyncImagePainter(model = it.postContentUrl),
                                     contentDescription = stringResource(R.string.image_content),
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier
                                         .aspectRatio(1f)
                                         .animateContentSize()
+                                        .clickable {
+                                            homeViewModel.onEvent(
+                                                HomeEvent.ClickMediaItem(
+                                                    postContentPairs = postContentPairs,
+                                                    currentIndex = postContentPairs.indexOf(it)
+                                                )
+                                            )
+                                        }
                                 )
                             }
                         }
 
-                        is VideoItem -> {
+                        "mp4" -> {
                             Box(
                                 modifier = Modifier
                                     .weight(1f, false)
                                     .padding(SpaceSmall),
                                 contentAlignment = Center
                             ) {
-                                retriever.setDataSource(it.contentUri.toString())
+                                val uri = Uri.parse(it.postContentUrl)
+                                retriever.setDataSource(uri.toString())
                                 val bitmap = retriever.getFrameAtTime(0)
-                                bitmap?.asImageBitmap()?.let { imageBitmap ->
-                                    Image(
-                                        bitmap = imageBitmap,
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .aspectRatio(1f)
-                                            .animateContentSize()
-                                            .clickable { /* TODO: Go to full screen video */ }
-                                    )
-                                }
+                                Image(
+                                    painter = rememberAsyncImagePainter(model = bitmap),
+                                    contentDescription = stringResource(
+                                        id = R.string.video_content
+                                    ),
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .aspectRatio(1f)
+                                        .animateContentSize()
+                                        .clickable {
+                                            homeViewModel.onEvent(
+                                                HomeEvent.ClickMediaItem(
+                                                    postContentPairs = postContentPairs,
+                                                    currentIndex = postContentPairs.indexOf(it)
+                                                )
+                                            )
+                                        }
+                                )
                                 Icon(
                                     imageVector = Icons.Filled.PlayCircle,
                                     modifier = Modifier.size(IconSizeLarge),

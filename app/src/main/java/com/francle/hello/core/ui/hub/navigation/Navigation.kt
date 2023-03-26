@@ -1,5 +1,7 @@
 package com.francle.hello.core.ui.hub.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -16,6 +18,7 @@ import com.francle.hello.feature.postdetail.PostDetailScreen
 import com.francle.hello.feature.register.ui.presentation.RegisterScreen
 import com.francle.hello.feature.splash.ui.presentation.SplashScreen
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun Navigation(
     modifier: Modifier,

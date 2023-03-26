@@ -1,6 +1,7 @@
 package com.francle.hello.feature.home.ui.viewmodel
 
 import android.content.SharedPreferences
+import android.media.MediaMetadataRetriever
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francle.hello.R
@@ -9,7 +10,10 @@ import com.francle.hello.core.data.util.page.PagingManager
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.core.util.Constants
 import com.francle.hello.feature.home.domain.model.Post
+import com.francle.hello.feature.home.domain.model.PostContentPair
 import com.francle.hello.feature.home.domain.repository.PostRepository
+import com.francle.hello.feature.home.ui.presentation.event.HomeEvent
+import com.google.android.exoplayer2.Player
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -22,13 +26,24 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val postRepository: PostRepository,
-    sharedPref: SharedPreferences
+    sharedPref: SharedPreferences,
+    val retriever: MediaMetadataRetriever,
+    val player: Player
 ) : ViewModel() {
     private val _posts = MutableStateFlow(emptyList<Post?>())
     val posts = _posts.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
+
+    private val _mediaItems = MutableStateFlow(emptyList<PostContentPair>())
+    val mediaItems = _mediaItems.asStateFlow()
+
+    private val _currentIndex = MutableStateFlow(0)
+    val currentIndex = _currentIndex.asStateFlow()
+
+    private val _isMediaItemClicked = MutableStateFlow(false)
+    val isMediaItemClicked = _isMediaItemClicked.asStateFlow()
 
     private val _responseChannel = Channel<UiText>()
     val responseChannel = _responseChannel.receiveAsFlow()
@@ -80,6 +95,19 @@ class HomeViewModel @Inject constructor(
         loadNextItems()
     }
 
+    fun onEvent(event: HomeEvent) {
+        when (event) {
+            is HomeEvent.ClickMediaItem -> {
+                _isMediaItemClicked.update { true }
+                _mediaItems.update { event.postContentPairs }
+                _currentIndex.update { event.currentIndex }
+            }
+
+            HomeEvent.DisMissFullScreen -> {
+                _isMediaItemClicked.update { false }
+            }
+        }
+    }
     private fun loadNextItems() {
         viewModelScope.launch {
             pagingManager.currentPage = _page.value

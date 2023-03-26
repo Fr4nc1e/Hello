@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.francle.hello.core.di.CoreModule
 import com.francle.hello.core.ui.hub.AppHub
 import com.francle.hello.core.ui.theme.HelloTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,11 +26,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        val retriever = CoreModule.provideRetriever()
-        retriever.release()
     }
 }
