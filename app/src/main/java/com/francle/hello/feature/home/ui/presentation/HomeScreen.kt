@@ -170,10 +170,7 @@ fun HomeScreen(
         ) {
             Box(
                 modifier = modifier
-                    .fillMaxSize()
-                    .clickable {
-                        homeViewModel.onEvent(HomeEvent.DisMissFullScreen)
-                    },
+                    .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 HorizontalPager(
@@ -191,7 +188,9 @@ fun HomeScreen(
                                     contentDescription = stringResource(
                                         R.string.image_content
                                     ),
-                                    modifier = Modifier.animateContentSize().fillMaxSize()
+                                    modifier = Modifier
+                                        .animateContentSize()
+                                        .fillMaxSize()
                                 )
                             }
 
@@ -208,7 +207,7 @@ fun HomeScreen(
                                                 )
                                             }
                                             view.resizeMode =
-                                                AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                                                AspectRatioFrameLayout.RESIZE_MODE_FIT
                                         }
                                     },
                                     update = { view ->
