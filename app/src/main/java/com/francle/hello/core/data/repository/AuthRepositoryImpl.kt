@@ -2,7 +2,7 @@ package com.francle.hello.core.data.repository
 
 import android.content.SharedPreferences
 import com.francle.hello.core.data.api.AuthApi
-import com.francle.hello.core.data.util.AuthResult
+import com.francle.hello.core.data.util.call.AuthResult
 import com.francle.hello.core.domain.repository.AuthRepository
 import com.francle.hello.core.util.Constants.KEY_JWT_TOKEN
 import retrofit2.HttpException

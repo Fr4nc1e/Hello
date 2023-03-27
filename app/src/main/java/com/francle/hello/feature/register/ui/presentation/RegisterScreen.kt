@@ -35,7 +35,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.francle.hello.R
-import com.francle.hello.core.data.util.AuthResult
+import com.francle.hello.core.data.util.call.AuthResult
 import com.francle.hello.core.ui.hub.navigation.destination.Destination
 import com.francle.hello.feature.register.ui.presentation.event.RegisterEvent
 import com.francle.hello.feature.register.ui.viewmodel.RegisterViewModel

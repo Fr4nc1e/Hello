@@ -1,6 +1,6 @@
 package com.francle.hello.core.data.util.page
 
-import com.francle.hello.core.data.util.Resource
+import com.francle.hello.core.data.util.call.Resource
 import kotlinx.coroutines.flow.Flow
 
 class PagingManager<Page, Item>(

@@ -1,6 +1,6 @@
 package com.francle.hello.feature.register.data.repository
 
-import com.francle.hello.core.data.util.AuthResult
+import com.francle.hello.core.data.util.call.AuthResult
 import com.francle.hello.feature.register.data.api.RegisterApi
 import com.francle.hello.feature.register.data.request.RegisterRequest
 import com.francle.hello.feature.register.domain.repository.RegisterRepository

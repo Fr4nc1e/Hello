@@ -13,4 +13,8 @@ sealed class HomeEvent {
     object Refresh : HomeEvent()
 
     object LoadNextItems : HomeEvent()
+
+    object CallContextMenu : HomeEvent()
+
+    data class DownloadMedia(val postContentPair: PostContentPair) : HomeEvent()
 }

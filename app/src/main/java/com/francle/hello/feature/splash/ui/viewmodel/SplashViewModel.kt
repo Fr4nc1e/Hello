@@ -2,7 +2,7 @@ package com.francle.hello.feature.splash.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.francle.hello.core.data.util.AuthResult
+import com.francle.hello.core.data.util.call.AuthResult
 import com.francle.hello.core.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

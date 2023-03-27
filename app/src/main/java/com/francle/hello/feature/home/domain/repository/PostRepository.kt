@@ -1,7 +1,7 @@
 package com.francle.hello.feature.home.domain.repository
 
 import android.net.Uri
-import com.francle.hello.core.data.util.Resource
+import com.francle.hello.core.data.util.call.Resource
 import com.francle.hello.feature.home.data.response.CreatePostResponse
 import com.francle.hello.feature.home.domain.model.Post
 import kotlinx.coroutines.flow.Flow

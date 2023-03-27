@@ -2,7 +2,7 @@ package com.francle.hello.feature.home.data.repository
 
 import android.net.Uri
 import com.francle.hello.R
-import com.francle.hello.core.data.util.Resource
+import com.francle.hello.core.data.util.call.Resource
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.feature.home.data.api.PostApi
 import com.francle.hello.feature.home.data.response.CreatePostResponse

@@ -2,7 +2,7 @@ package com.francle.hello.feature.login.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.francle.hello.core.data.util.AuthResult
+import com.francle.hello.core.data.util.call.AuthResult
 import com.francle.hello.core.ui.util.TextState
 import com.francle.hello.core.ui.util.Validator
 import com.francle.hello.feature.login.domain.repository.LoginRepository

@@ -22,4 +22,5 @@
     <string name="image_content">Image Content</string>
     <string name="video_content">Video Content</string>
     <string name="load_items">Load items.</string>
+    <string name="download">Download</string>
 </resources>

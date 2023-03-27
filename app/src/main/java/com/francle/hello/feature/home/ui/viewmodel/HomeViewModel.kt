@@ -2,10 +2,12 @@ package com.francle.hello.feature.home.ui.viewmodel
 
 import android.content.SharedPreferences
 import android.media.MediaMetadataRetriever
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francle.hello.R
-import com.francle.hello.core.data.util.Resource
+import com.francle.hello.core.data.util.call.Resource
+import com.francle.hello.core.data.util.download.Downloader
 import com.francle.hello.core.data.util.page.PagingManager
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.core.util.Constants
@@ -28,7 +30,8 @@ class HomeViewModel @Inject constructor(
     private val postRepository: PostRepository,
     sharedPref: SharedPreferences,
     val retriever: MediaMetadataRetriever,
-    val player: Player
+    val player: Player,
+    private val downloader: Downloader
 ) : ViewModel() {
     private val _posts = MutableStateFlow(emptyList<Post?>())
     val posts = _posts.asStateFlow()
@@ -41,6 +44,9 @@ class HomeViewModel @Inject constructor(
 
     private val _isEndReach = MutableStateFlow(false)
     val isEndReach = _isEndReach.asStateFlow()
+
+    private val _contextMenuVisible = MutableStateFlow(false)
+    val contextMenuVisible = _contextMenuVisible.asStateFlow()
 
     private val _mediaItems = MutableStateFlow(emptyList<PostContentPair>())
     val mediaItems = _mediaItems.asStateFlow()
@@ -117,6 +123,21 @@ class HomeViewModel @Inject constructor(
 
             HomeEvent.LoadNextItems -> {
                 loadNextItems()
+            }
+
+            is HomeEvent.DownloadMedia -> {
+                event.postContentPair.apply {
+                    if (fileName != null && postContentUrl != null) {
+                        downloader.downloadFile(
+                            fileName = fileName,
+                            uri = postContentUrl.toUri()
+                        )
+                    }
+                }
+            }
+
+            HomeEvent.CallContextMenu -> {
+                _contextMenuVisible.update { !it }
             }
         }
     }

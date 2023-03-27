@@ -1,7 +1,7 @@
 package com.francle.hello.feature.login.data.repository
 
 import android.content.SharedPreferences
-import com.francle.hello.core.data.util.AuthResult
+import com.francle.hello.core.data.util.call.AuthResult
 import com.francle.hello.core.util.Constants
 import com.francle.hello.feature.login.data.api.LoginApi
 import com.francle.hello.feature.login.data.request.LoginRequest
