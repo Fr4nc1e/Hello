@@ -36,6 +36,12 @@ class HomeViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
+    private val _isEndReach = MutableStateFlow(false)
+    val isEndReach = _isEndReach.asStateFlow()
+
     private val _mediaItems = MutableStateFlow(emptyList<PostContentPair>())
     val mediaItems = _mediaItems.asStateFlow()
 
@@ -51,7 +57,7 @@ class HomeViewModel @Inject constructor(
     private val _page = MutableStateFlow(0)
 
     private val pagingManager = PagingManager(
-        initialPage = _page.value,
+        initialPage = 0,
         onLoadUpdated = { loadingState ->
             _isLoading.update { loadingState }
         },
@@ -76,14 +82,12 @@ class HomeViewModel @Inject constructor(
                     is Resource.Success -> {
                         result.data?.let { posts ->
                             if (posts.isEmpty()) {
+                                _isEndReach.update { true }
                                 _responseChannel.send(UiText.StringResource(R.string.no_more_posts))
                                 return@collect
-                            }
+                            } else { _isEndReach.update { false } }
                             _posts.update { it + posts }
-                            _page.update {
-                                val nextPage = it + 1
-                                nextPage
-                            }
+                            _page.update { it + 1 }
                         }
                     }
                 }
@@ -106,6 +110,14 @@ class HomeViewModel @Inject constructor(
             HomeEvent.DisMissFullScreen -> {
                 _isMediaItemClicked.update { false }
             }
+
+            HomeEvent.Refresh -> {
+                swipeRefresh()
+            }
+
+            HomeEvent.LoadNextItems -> {
+                loadNextItems()
+            }
         }
     }
     private fun loadNextItems() {
@@ -113,5 +125,19 @@ class HomeViewModel @Inject constructor(
             pagingManager.currentPage = _page.value
             pagingManager.loadNextItems()
         }
+    }
+
+    private fun swipeRefresh() {
+        _isRefreshing.update { true }
+        _page.update { 0 }
+        _posts.update { emptyList() }
+        loadNextItems()
+        _isRefreshing.update { false }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        retriever.release()
+        player.release()
     }
 }

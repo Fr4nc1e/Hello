@@ -61,7 +61,7 @@ fun PostMediaContent(
                                 contentAlignment = Center
                             ) {
                                 Image(
-                                    painter = rememberAsyncImagePainter(model = it.postContentUrl),
+                                    painter = rememberAsyncImagePainter(it.postContentUrl),
                                     contentDescription = stringResource(R.string.image_content),
                                     contentScale = ContentScale.Crop,
                                     modifier = Modifier
@@ -91,7 +91,7 @@ fun PostMediaContent(
                                 retriever.setDataSource(uri.toString())
                                 val bitmap = retriever.getFrameAtTime(0)
                                 Image(
-                                    painter = rememberAsyncImagePainter(model = bitmap),
+                                    painter = rememberAsyncImagePainter(bitmap),
                                     contentDescription = stringResource(
                                         id = R.string.video_content
                                     ),

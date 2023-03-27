@@ -4,7 +4,7 @@ import com.francle.hello.core.data.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 class PagingManager<Page, Item>(
-    private val initialPage: Page,
+    initialPage: Page,
     private inline val onLoadUpdated: suspend (Boolean) -> Unit,
     private inline val onRequest: (nextPage: Page) -> Flow<Resource<List<Item?>?>>,
     private inline val onSuccess: suspend (items: Flow<Resource<List<Item?>?>>) -> Unit
@@ -19,9 +19,5 @@ class PagingManager<Page, Item>(
         isMakingRequest = false
         onSuccess(result)
         onLoadUpdated(false)
-    }
-
-    override fun reset() {
-        currentPage = initialPage
     }
 }

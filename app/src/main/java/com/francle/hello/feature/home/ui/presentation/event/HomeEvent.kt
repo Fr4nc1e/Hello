@@ -9,4 +9,8 @@ sealed class HomeEvent {
     ) : HomeEvent()
 
     object DisMissFullScreen : HomeEvent()
+
+    object Refresh : HomeEvent()
+
+    object LoadNextItems : HomeEvent()
 }

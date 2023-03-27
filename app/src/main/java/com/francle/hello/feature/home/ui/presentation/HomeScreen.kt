@@ -5,7 +5,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -58,6 +56,8 @@ import com.francle.hello.feature.home.ui.viewmodel.HomeViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.StyledPlayerView
@@ -77,12 +77,15 @@ fun HomeScreen(
     val context = LocalContext.current
     val posts = homeViewModel.posts.collectAsState().value
     val loading = homeViewModel.isLoading.collectAsState().value
+    val isRefreshing = homeViewModel.isRefreshing.collectAsState().value
+    val isEndReach = homeViewModel.isEndReach.collectAsState().value
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val lazyListState = rememberLazyListState()
     val mediaItems = homeViewModel.mediaItems.collectAsState().value
     val isMediaItemClicked = homeViewModel.isMediaItemClicked.collectAsState().value
     val currentIndex = homeViewModel.currentIndex.collectAsState().value
     val pagerState = rememberPagerState(currentIndex)
+    val refreshState = rememberSwipeRefreshState(isRefreshing)
     var lifecycle by remember {
         mutableStateOf(Lifecycle.Event.ON_CREATE)
     }
@@ -112,47 +115,57 @@ fun HomeScreen(
         }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
+    SwipeRefresh(
+        state = refreshState,
+        onRefresh = { homeViewModel.onEvent(HomeEvent.Refresh) }
     ) {
-        CenterAlignedTopAppBar(
-            title = {
-                Text(text = stringResource(id = R.string.home))
-            },
-            scrollBehavior = scrollBehavior
-        )
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+        ) {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(text = stringResource(id = R.string.home))
+                },
+                scrollBehavior = scrollBehavior
+            )
 
-        if (loading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(if (isSystemInDarkTheme()) Color.Gray else Color.White),
-                contentAlignment = Alignment.Center
-            ) {
-                Column {
-                    Text(text = "Loading", style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.height(SpaceSmall))
-                    CircularProgressIndicator()
+            if (loading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column {
+                        Text(text = "Loading", style = MaterialTheme.typography.titleMedium)
+                        Spacer(modifier = Modifier.height(SpaceSmall))
+                        CircularProgressIndicator()
+                    }
                 }
             }
-        }
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = lazyListState
-        ) {
-            items(posts) { post ->
-                post?.let {
-                    PostCard(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(SpaceSmall)
-                            .animateContentSize()
-                            .clickable { onNavigate(Destination.PostDetail.route + "/${it.id}") },
-                        post = it
-                    )
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = lazyListState
+            ) {
+                items(posts.size) { index ->
+                    if (index >= posts.size - 1 && !isEndReach && !loading) {
+                        homeViewModel.onEvent(HomeEvent.LoadNextItems)
+                    }
+                    posts[index]?.let { post ->
+                        PostCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(SpaceSmall)
+                                .animateContentSize()
+                                .clickable {
+                                    onNavigate(
+                                        Destination.PostDetail.route + "/${post.id}"
+                                    )
+                                },
+                            post = post
+                        )
+                    }
                 }
             }
         }
@@ -169,13 +182,14 @@ fun HomeScreen(
             )
         ) {
             Box(
-                modifier = modifier
-                    .fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black),
                 contentAlignment = Alignment.Center
             ) {
                 HorizontalPager(
                     count = mediaItems.size,
-                    modifier = modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     state = pagerState
                 ) { page ->
                     mediaItems[page].let { pair ->
@@ -224,7 +238,9 @@ fun HomeScreen(
                                             else -> Unit
                                         }
                                     },
-                                    modifier = Modifier.animateContentSize().fillMaxSize()
+                                    modifier = Modifier
+                                        .animateContentSize()
+                                        .fillMaxSize()
                                 )
                             }
                         }
