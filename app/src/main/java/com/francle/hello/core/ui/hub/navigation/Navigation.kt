@@ -12,6 +12,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.francle.hello.core.ui.hub.navigation.destination.Destination
+import com.francle.hello.feature.createpost.ui.presentation.CreatePostScreen
+import com.francle.hello.feature.fullscreen.ui.presentation.FullScreen
 import com.francle.hello.feature.home.ui.presentation.HomeScreen
 import com.francle.hello.feature.login.ui.presentation.LoginScreen
 import com.francle.hello.feature.postdetail.PostDetailScreen
@@ -31,14 +33,14 @@ fun Navigation(
     ) {
         composable(Destination.Splash.route) {
             SplashScreen(
-                modifier = modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 onNavigate = navHostController::navigate,
                 onPopBackStack = navHostController::popBackStack
             )
         }
         composable(Destination.Login.route) {
             LoginScreen(
-                modifier = modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 snackbarHostState = snackbarHostState,
                 onNavigate = navHostController::navigate,
                 onPopBackStack = navHostController::popBackStack
@@ -46,7 +48,7 @@ fun Navigation(
         }
         composable(Destination.Register.route) {
             RegisterScreen(
-                modifier = modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 snackbarHostState = snackbarHostState,
                 onNavigate = navHostController::navigate,
                 onPopBackStack = navHostController::popBackStack
@@ -68,9 +70,45 @@ fun Navigation(
             )
         ) {
             PostDetailScreen(
-                modifier = modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 snackbarHostState = snackbarHostState,
                 onNavigate = navHostController::navigate,
+                onNavigateUp = navHostController::navigateUp
+            )
+        }
+        composable(
+            route = Destination.FullScreenView.route + "/{post}" + "/{index}",
+            arguments = listOf(
+                navArgument(name = "post") {
+                    type = NavType.StringType
+                },
+                navArgument(name = "index") {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            val post = it.arguments?.getString("post")
+            val index = it.arguments?.getInt("index")
+            if (post != null && index != null) {
+                FullScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    snackbarHostState = snackbarHostState,
+                    onNavigate = navHostController::navigate,
+                    onNavigateUp = navHostController::navigateUp
+                )
+            }
+        }
+        composable(
+            route = Destination.CreatePost.route + "/{profileImageUrl}",
+            arguments = listOf(
+                navArgument(name = "profileImageUrl") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            CreatePostScreen(
+                modifier = Modifier.fillMaxSize(),
+                snackbarHostState = snackbarHostState,
                 onNavigateUp = navHostController::navigateUp
             )
         }

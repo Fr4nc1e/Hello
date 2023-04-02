@@ -1,6 +1,5 @@
 package com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components
 
-import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -25,19 +24,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.francle.hello.R
 import com.francle.hello.core.ui.theme.IconSizeLarge
 import com.francle.hello.core.ui.theme.SpaceSmall
 import com.francle.hello.feature.home.domain.model.PostContentPair
-import com.francle.hello.feature.home.ui.presentation.event.HomeEvent
 import com.francle.hello.feature.home.ui.viewmodel.HomeViewModel
 
 @Composable
 fun PostMediaContent(
     modifier: Modifier,
     postContentPairs: List<PostContentPair>?,
+    onMediaItemClick: (Int) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val retriever = homeViewModel.retriever
@@ -69,12 +69,7 @@ fun PostMediaContent(
                                         .animateContentSize()
                                         .clip(RoundedCornerShape(16.dp))
                                         .clickable {
-                                            homeViewModel.onEvent(
-                                                HomeEvent.ClickMediaItem(
-                                                    postContentPairs = postContentPairs,
-                                                    currentIndex = postContentPairs.indexOf(it)
-                                                )
-                                            )
+                                            onMediaItemClick(postContentPairs.indexOf(it))
                                         }
                                 )
                             }
@@ -87,7 +82,7 @@ fun PostMediaContent(
                                     .padding(SpaceSmall),
                                 contentAlignment = Center
                             ) {
-                                val uri = Uri.parse(it.postContentUrl)
+                                val uri = it.postContentUrl?.toUri()
                                 retriever.setDataSource(uri.toString())
                                 val bitmap = retriever.getFrameAtTime(0)
                                 Image(
@@ -101,12 +96,7 @@ fun PostMediaContent(
                                         .animateContentSize()
                                         .clip(RoundedCornerShape(16.dp))
                                         .clickable {
-                                            homeViewModel.onEvent(
-                                                HomeEvent.ClickMediaItem(
-                                                    postContentPairs = postContentPairs,
-                                                    currentIndex = postContentPairs.indexOf(it)
-                                                )
-                                            )
+                                            onMediaItemClick(postContentPairs.indexOf(it))
                                         }
                                 )
                                 Icon(

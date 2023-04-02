@@ -3,6 +3,7 @@ package com.francle.hello.feature.home.domain.model
 data class Post(
     val userId: String,
     val username: String?,
+    val hashTag: String?,
     val profileImageUrl: String?,
     val postText: String?,
     val postContentPairs: List<PostContentPair>?,

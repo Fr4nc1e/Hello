@@ -1,8 +1,15 @@
 package com.francle.hello.core.ui.hub
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -12,12 +19,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.francle.hello.R
 import com.francle.hello.core.ui.hub.navigation.Navigation
 import com.francle.hello.core.ui.hub.navigation.NavigationBottomBar
+import com.francle.hello.core.ui.hub.navigation.destination.Destination
+import com.francle.hello.core.ui.hub.navigation.util.urlEncode
 import com.francle.hello.core.ui.hub.viewmodel.AppHubViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppHub(
@@ -29,6 +41,7 @@ fun AppHub(
         SnackbarHostState()
     }
     val curRoute = viewModel.curRoute.collectAsState().value
+    val profileImageUrl = viewModel.profileImageUrl.collectAsState().value
 
     LaunchedEffect(navHostController) {
         navHostController.currentBackStackEntryFlow.collect { backStackEntry ->
@@ -54,7 +67,23 @@ fun AppHub(
             SnackbarHost(hostState = snackbarHostState) {
                 Snackbar(snackbarData = it)
             }
-        }
+        },
+        floatingActionButton = {
+            if (viewModel.inList()) {
+                FloatingActionButton(
+                    onClick = {
+                        navHostController
+                            .navigate(Destination.CreatePost.route + "/${profileImageUrl.urlEncode()}")
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.AddCircle,
+                        contentDescription = stringResource(R.string.create_post)
+                    )
+                }
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End
     ) {
         Navigation(
             modifier = Modifier.padding(it),

@@ -12,6 +12,7 @@ class RegisterRepositoryImpl(
     override suspend fun register(
         email: String,
         username: String,
+        hashTag: String,
         password: String
     ): AuthResult<String> {
         return try {
@@ -19,6 +20,7 @@ class RegisterRepositoryImpl(
                 RegisterRequest(
                     email = email,
                     username = username,
+                    hashTag = hashTag,
                     password = password
                 )
             )

@@ -27,4 +27,25 @@
     <string name="video_content">Video Content</string>
     <string name="load_items">Load items.</string>
     <string name="download">Download</string>
+    <string name="comment">Comment</string>
+    <string name="like">Like</string>
+    <string name="repost">Repost</string>
+    <string name="expand_bottomsheet">Expand Bottom Sheet</string>
+    <string name="id">Id, starts with @</string>
+    <string name="show_more">show more</string>
+    <string name="show_less">show less</string>
+    <string name="back">Back</string>
+    <string name="drop_menu">Drop Menu</string>
+    <string name="create_post">Create Post</string>
+    <string name="accept">Accept</string>
+    <string name="location_permission_required">Location Permission Required</string>
+    <string name="request_text">This app requires access to your location to function properly.</string>
+    <string name="photo">Photo</string>
+    <string name="camera">Camera</string>
+    <string name="done">Done</string>
+    <string name="type_here">Type here…</string>
+    <string name="create_post_successfully">Create post successfully.</string>
+    <string name="text_content_empty">Post contents are empty.</string>
+    <string name="post_created_unsuccessfully">Post created unsuccessfully.</string>
+    <string name="can_not_be_all_empty">Can not be all empty.</string>
 </resources>

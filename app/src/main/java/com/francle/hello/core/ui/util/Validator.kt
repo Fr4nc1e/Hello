@@ -10,7 +10,7 @@ object Validator {
             }
 
             !Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches() -> {
-                InputError.MatchError
+                InputError.EmailMatchError
             }
 
             else -> null
@@ -21,6 +21,20 @@ object Validator {
         return when {
             username.trim().isBlank() -> {
                 InputError.BlankError
+            }
+
+            else -> null
+        }
+    }
+
+    fun validateHashTag(hashTag: String): InputError? {
+        return when {
+            hashTag.trim().isBlank() -> {
+                InputError.BlankError
+            }
+
+            !hashTag.trim().startsWith('@') -> {
+                InputError.HashTagMatchError
             }
 
             else -> null

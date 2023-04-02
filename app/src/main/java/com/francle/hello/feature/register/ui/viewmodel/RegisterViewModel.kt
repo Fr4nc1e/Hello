@@ -26,6 +26,9 @@ class RegisterViewModel @Inject constructor(
     private val _username = MutableStateFlow(TextState())
     val username = _username.asStateFlow()
 
+    private val _hashTag = MutableStateFlow(TextState())
+    val hashTag = _hashTag.asStateFlow()
+
     private val _password = MutableStateFlow(TextState())
     val password = _password.asStateFlow()
 
@@ -50,6 +53,11 @@ class RegisterViewModel @Inject constructor(
                     it.copy(text = event.passwordText)
                 }
             }
+            is RegisterEvent.InputHashTag -> {
+                _hashTag.update {
+                    it.copy(text = event.hashTagText)
+                }
+            }
             is RegisterEvent.InputUsername -> {
                 _username.update {
                     it.copy(text = event.usernameText)
@@ -69,9 +77,11 @@ class RegisterViewModel @Inject constructor(
             _loading.update { true }
             _email.update { it.copy(error = Validator.validateEmail(_email.value.text)) }
             _username.update { it.copy(error = Validator.validateUsername(_username.value.text)) }
+            _hashTag.update { it.copy(error = Validator.validateHashTag(_hashTag.value.text)) }
             _password.update { it.copy(error = Validator.validatePassword(_password.value.text)) }
             if (_email.value.error != null ||
                 _username.value.error != null ||
+                _hashTag.value.error != null ||
                 _password.value.error != null
             ) {
                 _loading.update { false }
@@ -81,6 +91,7 @@ class RegisterViewModel @Inject constructor(
                 repository.register(
                     email = _email.value.text,
                     username = _username.value.text,
+                    hashTag = _hashTag.value.text,
                     password = _password.value.text
                 )
             )

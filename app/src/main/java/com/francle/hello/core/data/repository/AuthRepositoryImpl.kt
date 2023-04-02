@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.francle.hello.core.data.api.AuthApi
 import com.francle.hello.core.data.util.call.AuthResult
 import com.francle.hello.core.domain.repository.AuthRepository
+import com.francle.hello.core.util.Constants
 import com.francle.hello.core.util.Constants.KEY_JWT_TOKEN
 import retrofit2.HttpException
 
@@ -14,7 +15,8 @@ class AuthRepositoryImpl(
     override suspend fun authenticate(): AuthResult<Unit> {
         return try {
             val token = pref.getString(KEY_JWT_TOKEN, null) ?: return AuthResult.Unauthorized()
-            api.authenticate("Bearer $token")
+            val response = api.authenticate("Bearer $token")
+            pref.edit().putString(Constants.PROFILE_IMAGE_URL, response.profileImageUrl).apply()
             AuthResult.Authorized()
         } catch (e: HttpException) {
             if (e.code() == 401) {

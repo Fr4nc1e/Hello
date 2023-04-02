@@ -1,5 +1,8 @@
 package com.francle.hello.core.ui.hub.navigation
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.SpringSpec
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -32,7 +35,17 @@ fun NavigationBottomBar(
                         imageVector = bottomItems.icon,
                         contentDescription = stringResource(id = bottomItems.contentDescription)
                     )
-                }
+                },
+                label = {
+                    stringResource(id = bottomItems.contentDescription)
+                },
+                alwaysShowLabel = curRoute.startsWith(bottomItems.route),
+                modifier = Modifier.animateContentSize(
+                    animationSpec = SpringSpec(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
             )
         }
     }

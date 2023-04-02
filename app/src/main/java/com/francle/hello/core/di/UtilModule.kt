@@ -1,6 +1,7 @@
 package com.francle.hello.core.di
 
 import android.app.Application
+import android.media.MediaMetadataRetriever
 import com.francle.hello.core.data.util.download.Downloader
 import com.francle.hello.core.data.util.download.DownloaderImpl
 import com.google.android.exoplayer2.ExoPlayer
@@ -25,5 +26,11 @@ object UtilModule {
     @ViewModelScoped
     fun provideDownloader(app: Application): Downloader {
         return DownloaderImpl(app)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideRetriever(): MediaMetadataRetriever {
+        return MediaMetadataRetriever()
     }
 }

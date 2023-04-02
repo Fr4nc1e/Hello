@@ -2,36 +2,30 @@ package com.francle.hello.feature.home.ui.viewmodel
 
 import android.content.SharedPreferences
 import android.media.MediaMetadataRetriever
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francle.hello.R
 import com.francle.hello.core.data.util.call.Resource
-import com.francle.hello.core.data.util.download.Downloader
 import com.francle.hello.core.data.util.page.PagingManager
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.core.util.Constants
 import com.francle.hello.feature.home.domain.model.Post
-import com.francle.hello.feature.home.domain.model.PostContentPair
 import com.francle.hello.feature.home.domain.repository.PostRepository
 import com.francle.hello.feature.home.ui.presentation.event.HomeEvent
-import com.google.android.exoplayer2.Player
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val postRepository: PostRepository,
     sharedPref: SharedPreferences,
-    val retriever: MediaMetadataRetriever,
-    val player: Player,
-    private val downloader: Downloader
+    val retriever: MediaMetadataRetriever
 ) : ViewModel() {
     private val _posts = MutableStateFlow(emptyList<Post?>())
     val posts = _posts.asStateFlow()
@@ -45,17 +39,8 @@ class HomeViewModel @Inject constructor(
     private val _isEndReach = MutableStateFlow(false)
     val isEndReach = _isEndReach.asStateFlow()
 
-    private val _contextMenuVisible = MutableStateFlow(false)
-    val contextMenuVisible = _contextMenuVisible.asStateFlow()
-
-    private val _mediaItems = MutableStateFlow(emptyList<PostContentPair>())
-    val mediaItems = _mediaItems.asStateFlow()
-
-    private val _currentIndex = MutableStateFlow(0)
-    val currentIndex = _currentIndex.asStateFlow()
-
-    private val _isMediaItemClicked = MutableStateFlow(false)
-    val isMediaItemClicked = _isMediaItemClicked.asStateFlow()
+    private val _clickedMoreVert = MutableStateFlow<Post?>(null)
+    val clickedMoreVert = _clickedMoreVert.asStateFlow()
 
     private val _responseChannel = Channel<UiText>()
     val responseChannel = _responseChannel.receiveAsFlow()
@@ -107,16 +92,6 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.ClickMediaItem -> {
-                _isMediaItemClicked.update { true }
-                _mediaItems.update { event.postContentPairs }
-                _currentIndex.update { event.currentIndex }
-            }
-
-            HomeEvent.DisMissFullScreen -> {
-                _isMediaItemClicked.update { false }
-            }
-
             HomeEvent.Refresh -> {
                 swipeRefresh()
             }
@@ -125,19 +100,8 @@ class HomeViewModel @Inject constructor(
                 loadNextItems()
             }
 
-            is HomeEvent.DownloadMedia -> {
-                event.postContentPair.apply {
-                    if (fileName != null && postContentUrl != null) {
-                        downloader.downloadFile(
-                            fileName = fileName,
-                            uri = postContentUrl.toUri()
-                        )
-                    }
-                }
-            }
-
-            HomeEvent.CallContextMenu -> {
-                _contextMenuVisible.update { !it }
+            is HomeEvent.ClickMoreVert -> {
+                _clickedMoreVert.update { event.post }
             }
         }
     }
@@ -159,6 +123,5 @@ class HomeViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         retriever.release()
-        player.release()
     }
 }
