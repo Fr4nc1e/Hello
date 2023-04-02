@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import com.francle.hello.core.ui.theme.SpaceMedium
+import com.francle.hello.core.ui.theme.SpaceSmall
 import com.francle.hello.feature.home.domain.model.Post
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.BottomRow
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.ExpandableText
@@ -18,11 +19,17 @@ fun PostCard(
     modifier: Modifier,
     post: Post,
     onBottomSheetExpand: () -> Unit,
-    onMediaItemClick: (Int) -> Unit
+    onMediaItemClick: (Int) -> Unit,
+    onCommentClick: () -> Unit,
+    onRepostClick: () -> Unit,
+    onLikeClick: () -> Unit,
+    onShareClick: () -> Unit
 ) {
     Card(modifier = modifier) {
         HeadRow(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(SpaceSmall),
             profileImageUrl = post.profileImageUrl,
             username = post.username,
             hashTag = post.hashTag,
@@ -44,6 +51,12 @@ fun PostCard(
             onMediaItemClick = onMediaItemClick
         )
         
-        BottomRow(modifier = Modifier.fillMaxWidth())
+        BottomRow(
+            modifier = Modifier.fillMaxWidth(),
+            onCommentClick = { onCommentClick() },
+            onRepostClick = { onRepostClick() },
+            onLikeClick = { onLikeClick() },
+            onShareClick = { onShareClick() }
+        )
     }
 }

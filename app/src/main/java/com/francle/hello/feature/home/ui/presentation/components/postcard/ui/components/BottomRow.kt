@@ -17,7 +17,11 @@ import com.francle.hello.R
 
 @Composable
 fun BottomRow(
-    modifier: Modifier
+    modifier: Modifier,
+    onCommentClick: () -> Unit,
+    onRepostClick: () -> Unit,
+    onLikeClick: () -> Unit,
+    onShareClick: () -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -25,7 +29,7 @@ fun BottomRow(
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         // Comment
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = { onCommentClick() }) {
             Icon(
                 imageVector = Icons.Filled.ChatBubbleOutline,
                 contentDescription = stringResource(R.string.comment)
@@ -33,7 +37,7 @@ fun BottomRow(
         }
 
         // Repost
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = { onRepostClick() }) {
             Icon(
                 imageVector = Icons.Filled.Repeat,
                 contentDescription = stringResource(R.string.repost)
@@ -41,7 +45,7 @@ fun BottomRow(
         }
 
         // Like
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = { onLikeClick() }) {
             Icon(
                 imageVector = Icons.Filled.FavoriteBorder,
                 contentDescription = stringResource(R.string.like)
@@ -49,7 +53,7 @@ fun BottomRow(
         }
 
         // Share
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = { onShareClick() }) {
             Icon(
                 imageVector = Icons.Filled.Share,
                 contentDescription = stringResource(R.string.share)

@@ -16,7 +16,7 @@ import com.francle.hello.feature.createpost.ui.presentation.CreatePostScreen
 import com.francle.hello.feature.fullscreen.ui.presentation.FullScreen
 import com.francle.hello.feature.home.ui.presentation.HomeScreen
 import com.francle.hello.feature.login.ui.presentation.LoginScreen
-import com.francle.hello.feature.postdetail.PostDetailScreen
+import com.francle.hello.feature.postdetail.ui.presentaion.PostDetailScreen
 import com.francle.hello.feature.register.ui.presentation.RegisterScreen
 import com.francle.hello.feature.splash.ui.presentation.SplashScreen
 

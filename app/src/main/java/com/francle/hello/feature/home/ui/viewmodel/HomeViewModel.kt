@@ -2,6 +2,7 @@ package com.francle.hello.feature.home.ui.viewmodel
 
 import android.content.SharedPreferences
 import android.media.MediaMetadataRetriever
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francle.hello.R
@@ -27,6 +28,8 @@ class HomeViewModel @Inject constructor(
     sharedPref: SharedPreferences,
     val retriever: MediaMetadataRetriever
 ) : ViewModel() {
+    private val userId = mutableStateOf("")
+
     private val _posts = MutableStateFlow(emptyList<Post?>())
     val posts = _posts.asStateFlow()
 
@@ -38,6 +41,9 @@ class HomeViewModel @Inject constructor(
 
     private val _isEndReach = MutableStateFlow(false)
     val isEndReach = _isEndReach.asStateFlow()
+
+    private val _isOwnPost = MutableStateFlow(false)
+    val isOwnPost = _isOwnPost.asStateFlow()
 
     private val _clickedMoreVert = MutableStateFlow<Post?>(null)
     val clickedMoreVert = _clickedMoreVert.asStateFlow()
@@ -88,6 +94,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadNextItems()
+        userId.value = sharedPref.getString(Constants.KEY_USER_ID, "") ?: ""
     }
 
     fun onEvent(event: HomeEvent) {
@@ -103,8 +110,41 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.ClickMoreVert -> {
                 _clickedMoreVert.update { event.post }
             }
+
+            is HomeEvent.IsOwnPost -> {
+                _isOwnPost.update { onOwnPostJudge(event.postUserId) }
+            }
+
+            HomeEvent.DeletePost -> {
+                viewModelScope.launch {
+                    _clickedMoreVert.value?.id?.let {
+                        postRepository.deletePostByPostId(it).let { result ->
+                            when (result) {
+                                is Resource.Error -> {
+                                    _responseChannel.send(
+                                        result.message ?: UiText.StringResource(
+                                            R.string.an_unknown_error_occurred)
+                                    )
+                                }
+                                is Resource.Success -> {
+                                    _posts.update { list ->
+                                        list.filterNot { post ->
+                                            post?.id == _clickedMoreVert.value?.id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
+
+    private fun onOwnPostJudge(postUserId: String): Boolean {
+        return userId.value == postUserId
+    }
+
     private fun loadNextItems() {
         viewModelScope.launch {
             pagingManager.currentPage = _page.value

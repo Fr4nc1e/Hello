@@ -7,5 +7,9 @@ sealed class HomeEvent {
 
     object LoadNextItems : HomeEvent()
 
+    object DeletePost : HomeEvent()
+
     data class ClickMoreVert(val post: Post) : HomeEvent()
+
+    data class IsOwnPost(val postUserId: String) : HomeEvent()
 }

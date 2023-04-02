@@ -44,4 +44,8 @@
     <string name="text_content_empty">Post contents are empty.</string>
     <string name="post_created_unsuccessfully">Post created unsuccessfully.</string>
     <string name="can_not_be_all_empty">Can not be all empty.</string>
+    <string name="delete_this_post">Delete this post.</string>
+    <string name="put_this_post_on_the_top_of_profile">Put this post on the top of profile.</string>
+    <string name="post_detail">Post detail</string>
+    <string name="comment_here">Comment here…</string>
 </resources>

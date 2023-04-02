@@ -3,8 +3,6 @@ package com.francle.hello.feature.home.ui.presentation.components.postcard.ui.co
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
@@ -27,7 +25,6 @@ import coil.request.ImageRequest
 import com.francle.hello.R
 import com.francle.hello.core.ui.theme.ProfilePictureSizeSmall
 import com.francle.hello.core.ui.theme.SpaceMedium
-import com.francle.hello.core.ui.theme.SpaceSmall
 
 @Composable
 fun HeadRow(
@@ -38,7 +35,7 @@ fun HeadRow(
     onBottomSheetExpand: () -> Unit
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().padding(SpaceSmall),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

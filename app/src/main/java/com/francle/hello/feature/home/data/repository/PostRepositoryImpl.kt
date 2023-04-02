@@ -1,11 +1,9 @@
 package com.francle.hello.feature.home.data.repository
 
-import android.net.Uri
 import com.francle.hello.R
 import com.francle.hello.core.data.util.call.Resource
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.feature.home.data.api.PostApi
-import com.francle.hello.feature.home.data.response.CreatePostResponse
 import com.francle.hello.feature.home.domain.model.Post
 import com.francle.hello.feature.home.domain.repository.PostRepository
 import kotlinx.coroutines.flow.Flow
@@ -89,18 +87,51 @@ class PostRepositoryImpl(
         }
     }
 
-    override fun createPost(
-        postData: String?,
-        postContent: List<Uri>?
-    ): Flow<Resource<CreatePostResponse?>> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun deletePostByPostId(postId: String): Resource<Unit> {
-        TODO("Not yet implemented")
+        return try {
+            api.deletePostByPostId(postId)
+            Resource.Success()
+        } catch (e: HttpException) {
+            if (e.code() == 404) {
+                Resource.Error(
+                    data = null,
+                    message = UiText.StringResource(R.string.post_not_found)
+                )
+            } else {
+                Resource.Error(
+                    data = null,
+                    message = UiText.StringResource(R.string.something_went_wrong)
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(
+                data = null,
+                message = UiText.StringResource(R.string.something_went_wrong)
+            )
+        }
     }
 
     override suspend fun deletePostsByUserId(userId: String): Resource<Unit> {
-        TODO("Not yet implemented")
+        return try {
+            api.deletePostByPostId(userId)
+            Resource.Success()
+        } catch (e: HttpException) {
+            if (e.code() == 404) {
+                Resource.Error(
+                    data = null,
+                    message = UiText.StringResource(R.string.post_not_found)
+                )
+            } else {
+                Resource.Error(
+                    data = null,
+                    message = UiText.StringResource(R.string.something_went_wrong)
+                )
+            }
+        } catch (e: Exception) {
+            Resource.Error(
+                data = null,
+                message = UiText.StringResource(R.string.something_went_wrong)
+            )
+        }
     }
 }

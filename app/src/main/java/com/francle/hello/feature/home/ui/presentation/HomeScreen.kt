@@ -18,8 +18,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Block
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.HideSource
 import androidx.compose.material.icons.filled.PersonAddDisabled
+import androidx.compose.material.icons.filled.VerticalAlignTop
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -73,6 +75,7 @@ fun HomeScreen(
     val isRefreshing = homeViewModel.isRefreshing.collectAsState().value
     val isEndReach = homeViewModel.isEndReach.collectAsState().value
     val clickedMoreVert = homeViewModel.clickedMoreVert.collectAsState().value
+    val isOwnPost = homeViewModel.isOwnPost.collectAsState().value
 
     // Local Variable
     val context = LocalContext.current
@@ -156,9 +159,10 @@ fun HomeScreen(
                                 },
                             post = post,
                             onBottomSheetExpand = {
+                                homeViewModel.onEvent(HomeEvent.IsOwnPost(post.userId))
+                                homeViewModel.onEvent(HomeEvent.ClickMoreVert(post))
                                 scope.launch {
                                     bottomSheetState.expand()
-                                    homeViewModel.onEvent(HomeEvent.ClickMoreVert(post))
                                 }
                             },
                             onMediaItemClick = { index ->
@@ -166,7 +170,11 @@ fun HomeScreen(
                                     Destination.FullScreenView.route +
                                             "/${post.toJson()?.urlEncode()}" + "/$index"
                                 )
-                            }
+                            },
+                            onCommentClick = {},
+                            onRepostClick = {},
+                            onLikeClick = {},
+                            onShareClick = {}
                         )
                     }
                 }
@@ -186,47 +194,100 @@ fun HomeScreen(
                         RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                     )
             ) {
-                Column(
-                    modifier = Modifier.padding(SpaceMedium),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(SpaceMedium),
-                        horizontalArrangement = Arrangement.spacedBy(SpaceMedium),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(imageVector = Icons.Filled.PersonAddDisabled, contentDescription = null)
-                        Text(
-                            text = "Unfollow ${clickedMoreVert?.hashTag}",
-                            style = MaterialTheme.typography.titleMedium
-                        )
+                when (isOwnPost) {
+                    true -> {
+                        Column(
+                            modifier = Modifier.padding(SpaceMedium),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(SpaceMedium)
+                                    .clickable {
+                                        homeViewModel.onEvent(HomeEvent.DeletePost)
+                                        scope.launch {
+                                            bottomSheetState.collapse()
+                                        }
+                                    },
+                                horizontalArrangement = Arrangement.spacedBy(SpaceMedium),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Delete,
+                                    contentDescription = null
+                                )
+                                Text(
+                                    text = stringResource(R.string.delete_this_post),
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(SpaceMedium),
+                                horizontalArrangement = Arrangement.spacedBy(SpaceMedium),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.VerticalAlignTop,
+                                    contentDescription = null
+                                )
+                                Text(
+                                    text = stringResource(R.string.put_this_post_on_the_top_of_profile),
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                        }
                     }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(SpaceMedium),
-                        horizontalArrangement = Arrangement.spacedBy(SpaceMedium)
-                    ) {
-                        Icon(imageVector = Icons.Filled.HideSource, contentDescription = null)
-                        Text(
-                            text = "Hide ${clickedMoreVert?.hashTag}",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(SpaceMedium),
-                        horizontalArrangement = Arrangement.spacedBy(SpaceMedium)
-                    ) {
-                        Icon(imageVector = Icons.Filled.Block, contentDescription = null)
-                        Text(
-                            text = "Block ${clickedMoreVert?.hashTag}",
-                            style = MaterialTheme.typography.titleMedium
-                        )
+                    false -> {
+                        Column(
+                            modifier = Modifier.padding(SpaceMedium),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(SpaceMedium),
+                                horizontalArrangement = Arrangement.spacedBy(SpaceMedium),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.PersonAddDisabled,
+                                    contentDescription = null
+                                )
+                                Text(
+                                    text = "Unfollow ${clickedMoreVert?.hashTag}",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(SpaceMedium),
+                                horizontalArrangement = Arrangement.spacedBy(SpaceMedium)
+                            ) {
+                                Icon(imageVector = Icons.Filled.HideSource, contentDescription = null)
+                                Text(
+                                    text = "Hide ${clickedMoreVert?.hashTag}",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(SpaceMedium),
+                                horizontalArrangement = Arrangement.spacedBy(SpaceMedium)
+                            ) {
+                                Icon(imageVector = Icons.Filled.Block, contentDescription = null)
+                                Text(
+                                    text = "Block ${clickedMoreVert?.hashTag}",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                        }
                     }
                 }
             }
