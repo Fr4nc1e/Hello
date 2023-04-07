@@ -8,13 +8,17 @@ import androidx.activity.result.launch
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -48,19 +52,15 @@ import com.francle.hello.R
 import com.francle.hello.core.data.util.file.toUri
 import com.francle.hello.core.ui.event.UiEvent
 import com.francle.hello.core.ui.theme.ProfilePictureSizeSmall
-import com.francle.hello.core.ui.theme.SpaceMedium
 import com.francle.hello.core.ui.theme.SpaceSmall
 import com.francle.hello.core.ui.util.asString
 import com.francle.hello.feature.createpost.ui.presentation.components.CreatePostBottomBar
 import com.francle.hello.feature.createpost.ui.presentation.components.CreatePostTopAppBar
 import com.francle.hello.feature.createpost.ui.presentation.event.CreatePostEvent
 import com.francle.hello.feature.createpost.ui.viewmodel.CreatePostViewModel
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePostScreen(
     modifier: Modifier,
@@ -73,9 +73,6 @@ fun CreatePostScreen(
     val chosenMediaUriList = createPostViewModel.chosenContentUriList.collectAsState().value
     val postText = createPostViewModel.postText.collectAsState().value
     val loading = createPostViewModel.isLoading.collectAsState().value
-
-    // Local state
-    val pagerState = rememberPagerState()
 
     // Local Variables
     val context = LocalContext.current
@@ -178,33 +175,32 @@ fun CreatePostScreen(
             )
         }
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it),
-            horizontalArrangement = Arrangement.spacedBy(SpaceSmall)
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Image(
-                painter = rememberAsyncImagePainter(
-                    ImageRequest.Builder(LocalContext.current)
-                        .data(profileImageUrl)
-                        .apply(
-                            block = fun ImageRequest.Builder.() { crossfade(true) }
-                        ).build()
-                ),
-                contentDescription = stringResource(R.string.profile_image),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .padding(SpaceSmall)
-                    .size(ProfilePictureSizeSmall)
-                    .clip(CircleShape)
-            )
-
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(SpaceMedium)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(SpaceSmall)
             ) {
+                Image(
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest.Builder(LocalContext.current)
+                            .data(profileImageUrl)
+                            .apply(
+                                block = fun ImageRequest.Builder.() { crossfade(true) }
+                            ).build()
+                    ),
+                    contentDescription = stringResource(R.string.profile_image),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .padding(SpaceSmall)
+                        .size(ProfilePictureSizeSmall)
+                        .clip(CircleShape)
+                )
+
                 TextField(
                     value = postText.text,
                     onValueChange = { text ->
@@ -220,18 +216,27 @@ fun CreatePostScreen(
                         unfocusedIndicatorColor = MaterialTheme.colorScheme.surface
                     )
                 )
-                chosenMediaUriList?.apply {
-                    HorizontalPager(
-                        count = size,
-                        state = pagerState,
-                        itemSpacing = SpaceSmall,
-                        modifier = Modifier.padding(SpaceSmall).clip(RoundedCornerShape(16.dp))
-                    ) { page ->
-                        Image(
-                            painter = rememberAsyncImagePainter(chosenMediaUriList[page]),
-                            contentDescription = "Chosen media",
-                            modifier = Modifier.aspectRatio(1f)
-                        )
+            }
+
+            chosenMediaUriList?.let {
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(SpaceSmall),
+                    contentPadding = PaddingValues(SpaceSmall)
+                ) {
+                    items(chosenMediaUriList) { uri ->
+                        Box(
+                            modifier = Modifier.size(150.dp).clip(RoundedCornerShape(16.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                painter = rememberAsyncImagePainter(model = uri),
+                                contentDescription = null,
+                                modifier = Modifier.aspectRatio(1f).fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
                 }
             }
