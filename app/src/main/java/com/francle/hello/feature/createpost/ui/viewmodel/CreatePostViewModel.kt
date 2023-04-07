@@ -1,7 +1,7 @@
 package com.francle.hello.feature.createpost.ui.viewmodel
 
+import android.content.SharedPreferences
 import android.net.Uri
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francle.hello.R
@@ -9,6 +9,7 @@ import com.francle.hello.core.data.util.call.Resource
 import com.francle.hello.core.ui.event.UiEvent
 import com.francle.hello.core.ui.util.TextState
 import com.francle.hello.core.ui.util.UiText
+import com.francle.hello.core.util.Constants
 import com.francle.hello.feature.createpost.domain.repository.CreatePostRepository
 import com.francle.hello.feature.createpost.ui.presentation.event.CreatePostEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreatePostViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+    sharedPreferences: SharedPreferences,
     private val repository: CreatePostRepository
 ) : ViewModel() {
     private val _profileImageUrl = MutableStateFlow("")
@@ -41,8 +42,8 @@ class CreatePostViewModel @Inject constructor(
     val resultChannel = _resultChannel.receiveAsFlow()
 
     init {
-        savedStateHandle.get<String>("profileImageUrl")?.let { url ->
-            _profileImageUrl.update { url }
+        _profileImageUrl.update {
+            sharedPreferences.getString(Constants.PROFILE_IMAGE_URL, null) ?: ""
         }
     }
 

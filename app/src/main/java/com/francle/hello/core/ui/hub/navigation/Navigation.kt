@@ -16,6 +16,7 @@ import com.francle.hello.feature.createpost.ui.presentation.CreatePostScreen
 import com.francle.hello.feature.fullscreen.ui.presentation.FullScreen
 import com.francle.hello.feature.home.ui.presentation.HomeScreen
 import com.francle.hello.feature.login.ui.presentation.LoginScreen
+import com.francle.hello.feature.pair.ui.presentation.PairScreen
 import com.francle.hello.feature.postdetail.ui.presentaion.PostDetailScreen
 import com.francle.hello.feature.register.ui.presentation.RegisterScreen
 import com.francle.hello.feature.splash.ui.presentation.SplashScreen
@@ -98,18 +99,17 @@ fun Navigation(
                 )
             }
         }
-        composable(
-            route = Destination.CreatePost.route + "/{profileImageUrl}",
-            arguments = listOf(
-                navArgument(name = "profileImageUrl") {
-                    type = NavType.StringType
-                }
-            )
-        ) {
+        composable(Destination.CreatePost.route) {
             CreatePostScreen(
                 modifier = Modifier.fillMaxSize(),
                 snackbarHostState = snackbarHostState,
                 onNavigateUp = navHostController::navigateUp
+            )
+        }
+        composable(Destination.Pair.route) {
+            PairScreen(
+                modifier = modifier.fillMaxSize(),
+                snackbarHostState = snackbarHostState
             )
         }
     }

@@ -26,7 +26,6 @@ import com.francle.hello.R
 import com.francle.hello.core.ui.hub.navigation.Navigation
 import com.francle.hello.core.ui.hub.navigation.NavigationBottomBar
 import com.francle.hello.core.ui.hub.navigation.destination.Destination
-import com.francle.hello.core.ui.hub.navigation.util.urlEncode
 import com.francle.hello.core.ui.hub.viewmodel.AppHubViewModel
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -41,7 +40,6 @@ fun AppHub(
         SnackbarHostState()
     }
     val curRoute = viewModel.curRoute.collectAsState().value
-    val profileImageUrl = viewModel.profileImageUrl.collectAsState().value
 
     LaunchedEffect(navHostController) {
         navHostController.currentBackStackEntryFlow.collect { backStackEntry ->
@@ -69,11 +67,10 @@ fun AppHub(
             }
         },
         floatingActionButton = {
-            if (viewModel.inList()) {
+            if (curRoute == Destination.Home.route) {
                 FloatingActionButton(
                     onClick = {
-                        navHostController
-                            .navigate(Destination.CreatePost.route + "/${profileImageUrl.urlEncode()}")
+                        navHostController.navigate(Destination.CreatePost.route)
                     }
                 ) {
                     Icon(

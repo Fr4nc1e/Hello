@@ -48,4 +48,9 @@
     <string name="put_this_post_on_the_top_of_profile">Put this post on the top of profile.</string>
     <string name="post_detail">Post detail</string>
     <string name="comment_here">Comment here…</string>
+    <string name="pair">Pair</string>
+    <string name="chat">Chat</string>
+    <string name="profile">Profile</string>
+    <string name="no_more_user_to_be_paired">No more user to be paired.</string>
+    <string name="no_more_user_to_pair">No more user to pair.</string>
 </resources>
