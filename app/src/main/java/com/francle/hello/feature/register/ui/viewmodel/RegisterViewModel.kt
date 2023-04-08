@@ -1,12 +1,17 @@
 package com.francle.hello.feature.register.ui.viewmodel
 
+import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.francle.hello.R
 import com.francle.hello.core.data.util.call.AuthResult
 import com.francle.hello.core.ui.util.TextState
 import com.francle.hello.core.ui.util.Validator
 import com.francle.hello.feature.register.domain.repository.RegisterRepository
 import com.francle.hello.feature.register.ui.presentation.event.RegisterEvent
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -18,7 +23,9 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val repository: RegisterRepository
+    private val repository: RegisterRepository,
+    val player: Player,
+    app: Application
 ) : ViewModel() {
     private val _email = MutableStateFlow(TextState())
     val email = _email.asStateFlow()
@@ -40,6 +47,20 @@ class RegisterViewModel @Inject constructor(
 
     private val resultChannel = Channel<AuthResult<String>>()
     val authResults = resultChannel.receiveAsFlow()
+
+    init {
+        val packageName = app.packageName
+        val videoUri = Uri.parse(
+            "android.resource://$packageName/${R.raw.splash_screen_video}"
+        )
+        player.apply {
+            setMediaItem(MediaItem.fromUri(videoUri))
+            repeatMode = Player.REPEAT_MODE_ALL
+            playWhenReady = true
+            prepare()
+            volume = 0f
+        }
+    }
 
     fun onEvent(event: RegisterEvent) {
         when (event) {
@@ -97,5 +118,10 @@ class RegisterViewModel @Inject constructor(
             )
             _loading.update { false }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        player.release()
     }
 }

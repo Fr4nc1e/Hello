@@ -6,6 +6,7 @@ import com.francle.hello.core.util.Constants
 import com.francle.hello.feature.login.data.api.LoginApi
 import com.francle.hello.feature.login.data.request.LoginRequest
 import com.francle.hello.feature.login.domain.repository.LoginRepository
+import com.onesignal.OneSignal
 import retrofit2.HttpException
 
 class LoginRepositoryImpl(
@@ -27,6 +28,7 @@ class LoginRepositoryImpl(
                 .putString(Constants.KEY_JWT_TOKEN, response.token)
                 .putString(Constants.KEY_USER_ID, response.userId)
                 .apply()
+            OneSignal.setExternalUserId(response.userId)
             AuthResult.Authorized()
         } catch (e: HttpException) {
             if (e.code() == 401) {

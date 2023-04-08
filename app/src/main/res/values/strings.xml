@@ -57,4 +57,7 @@
     <string name="profile">Profile</string>
     <string name="no_more_user_to_be_paired">No more user to be paired.</string>
     <string name="no_more_user_to_pair">No more user to pair.</string>
+    <string name="notification">Notification</string>
+    <string name="clear">Clear</string>
+    <string name="sign_up">Sign up</string>
 </resources>
