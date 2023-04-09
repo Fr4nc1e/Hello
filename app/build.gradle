@@ -51,10 +51,10 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.0'
-    implementation 'androidx.activity:activity-compose:1.6.1'
-    implementation platform('androidx.compose:compose-bom:2023.01.00')
+    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation 'androidx.activity:activity-compose:1.7.0'
+    implementation platform('androidx.compose:compose-bom:2023.04.00')
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
@@ -63,7 +63,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.01.00')
+    androidTestImplementation platform('androidx.compose:compose-bom:2023.04.00')
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
@@ -72,12 +72,12 @@ dependencies {
     implementation 'androidx.navigation:navigation-compose:2.5.3'
     implementation "com.google.accompanist:accompanist-pager:0.23.1"
     implementation "com.google.accompanist:accompanist-swiperefresh:0.25.1"
-    implementation "com.google.accompanist:accompanist-permissions:0.24.13-rc"
+    implementation 'com.google.accompanist:accompanist-permissions:0.31.0-alpha'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
-    implementation "io.github.dokar3:sheets:0.4.1"
+    implementation 'io.github.dokar3:sheets:0.4.2'
 
     // Coil
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation('io.coil-kt:coil-compose:2.3.0')
 
     // Exoplayer
     implementation "com.google.android.exoplayer:exoplayer:2.18.5"
@@ -97,7 +97,10 @@ dependencies {
     // Gson
     implementation("com.google.code.gson:gson:2.10.1")
 
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.2"
+    // One Signal
+    implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
+
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
 }
 
 // Allow references to generated code

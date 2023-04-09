@@ -16,6 +16,7 @@ import com.francle.hello.feature.createpost.ui.presentation.CreatePostScreen
 import com.francle.hello.feature.fullscreen.ui.presentation.FullScreen
 import com.francle.hello.feature.home.ui.presentation.HomeScreen
 import com.francle.hello.feature.login.ui.presentation.LoginScreen
+import com.francle.hello.feature.notification.ui.presentation.NotificationScreen
 import com.francle.hello.feature.pair.ui.presentation.PairScreen
 import com.francle.hello.feature.postdetail.ui.presentaion.PostDetailScreen
 import com.francle.hello.feature.register.ui.presentation.RegisterScreen
@@ -110,6 +111,14 @@ fun Navigation(
             PairScreen(
                 modifier = modifier.fillMaxSize(),
                 snackbarHostState = snackbarHostState
+            )
+        }
+        composable(Destination.Notification.route) {
+            NotificationScreen(
+                modifier = Modifier.fillMaxSize(),
+                snackbarHostState = snackbarHostState,
+                onNavigate = navHostController::navigate,
+                onNavigateUp = navHostController::navigateUp
             )
         }
     }

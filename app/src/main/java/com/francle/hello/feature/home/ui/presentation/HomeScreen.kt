@@ -20,12 +20,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.HideSource
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PersonAddDisabled
 import androidx.compose.material.icons.filled.VerticalAlignTop
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -112,6 +114,14 @@ fun HomeScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(text = stringResource(id = R.string.home))
+                },
+                actions = {
+                    IconButton(onClick = { onNavigate(Destination.Notification.route) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Notifications,
+                            contentDescription = null
+                        )
+                    }
                 },
                 scrollBehavior = scrollBehavior
             )
