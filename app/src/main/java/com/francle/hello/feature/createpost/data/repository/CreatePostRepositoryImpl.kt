@@ -12,20 +12,20 @@ import com.francle.hello.feature.createpost.data.api.CreatePostApi
 import com.francle.hello.feature.createpost.data.request.CreatePostRequest
 import com.francle.hello.feature.createpost.domain.repository.CreatePostRepository
 import com.google.gson.Gson
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 
 class CreatePostRepositoryImpl(
     private val api: CreatePostApi,
     private val context: Context,
     private val gson: Gson
-): CreatePostRepository {
+) : CreatePostRepository {
     @SuppressLint("Recycle")
     override suspend fun createPost(
         postText: String?,

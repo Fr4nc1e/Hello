@@ -94,7 +94,7 @@ fun LoginScreen(
     }
 
     AndroidView(
-        factory =  {
+        factory = {
             StyledPlayerView(context).apply {
                 player = viewModel.player
                 layoutParams = FrameLayout.LayoutParams(

@@ -36,7 +36,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +45,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dokar.sheets.BottomSheetLayout
 import com.dokar.sheets.rememberBottomSheetState
 import com.francle.hello.R
@@ -72,12 +72,12 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     // ViewModel Variables
-    val posts = homeViewModel.posts.collectAsState().value
-    val loading = homeViewModel.isLoading.collectAsState().value
-    val isRefreshing = homeViewModel.isRefreshing.collectAsState().value
-    val isEndReach = homeViewModel.isEndReach.collectAsState().value
-    val clickedMoreVert = homeViewModel.clickedMoreVert.collectAsState().value
-    val isOwnPost = homeViewModel.isOwnPost.collectAsState().value
+    val posts = homeViewModel.posts.collectAsStateWithLifecycle().value
+    val loading = homeViewModel.isLoading.collectAsStateWithLifecycle().value
+    val isRefreshing = homeViewModel.isRefreshing.collectAsStateWithLifecycle().value
+    val isEndReach = homeViewModel.isEndReach.collectAsStateWithLifecycle().value
+    val clickedMoreVert = homeViewModel.clickedMoreVert.collectAsStateWithLifecycle().value
+    val isOwnPost = homeViewModel.isOwnPost.collectAsStateWithLifecycle().value
 
     // Local Variable
     val context = LocalContext.current
@@ -178,17 +178,16 @@ fun HomeScreen(
                             onMediaItemClick = { index ->
                                 onNavigate(
                                     Destination.FullScreenView.route +
-                                            "/${post.toJson()?.urlEncode()}" + "/$index"
+                                        "/${post.toJson()?.urlEncode()}" + "/$index"
                                 )
                             },
                             onCommentClick = {},
                             onRepostClick = {},
-                            onLikeClick = {},
                             onShareClick = {}
                         )
                     }
                 }
-                item { 
+                item {
                     Spacer(modifier = Modifier.height(70.dp))
                 }
             }
@@ -245,7 +244,9 @@ fun HomeScreen(
                                     contentDescription = null
                                 )
                                 Text(
-                                    text = stringResource(R.string.put_this_post_on_the_top_of_profile),
+                                    text = stringResource(
+                                        R.string.put_this_post_on_the_top_of_profile
+                                    ),
                                     style = MaterialTheme.typography.titleMedium
                                 )
                             }
@@ -279,7 +280,10 @@ fun HomeScreen(
                                     .padding(SpaceMedium),
                                 horizontalArrangement = Arrangement.spacedBy(SpaceMedium)
                             ) {
-                                Icon(imageVector = Icons.Filled.HideSource, contentDescription = null)
+                                Icon(
+                                    imageVector = Icons.Filled.HideSource,
+                                    contentDescription = null
+                                )
                                 Text(
                                     text = "Hide ${clickedMoreVert?.hashTag}",
                                     style = MaterialTheme.typography.titleMedium

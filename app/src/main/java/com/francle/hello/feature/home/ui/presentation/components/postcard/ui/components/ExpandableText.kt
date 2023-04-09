@@ -1,6 +1,5 @@
 package com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components
 
-
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec

@@ -1,6 +1,6 @@
 package com.francle.hello.feature.pair.domain.models
 
-data class PairUser (
+data class PairUser(
     val userId: String,
     val username: String,
     val hashTag: String,

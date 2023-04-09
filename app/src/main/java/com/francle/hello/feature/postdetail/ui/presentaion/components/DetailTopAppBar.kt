@@ -19,7 +19,7 @@ fun DetailTopAppBar(
     modifier: Modifier,
     title: String,
     scrollBehavior: TopAppBarScrollBehavior,
-    onNavigateUp: () -> Unit,
+    onNavigateUp: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = { Text(text = title) },

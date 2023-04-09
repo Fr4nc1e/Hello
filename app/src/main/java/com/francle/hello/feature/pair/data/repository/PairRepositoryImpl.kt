@@ -6,10 +6,10 @@ import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.feature.pair.data.api.PairApi
 import com.francle.hello.feature.pair.domain.models.PairUser
 import com.francle.hello.feature.pair.domain.repository.PairRepository
+import java.io.IOException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
-import java.io.IOException
 
 class PairRepositoryImpl(
     private val pairApi: PairApi
@@ -20,9 +20,17 @@ class PairRepositoryImpl(
                 val response = pairApi.getPairUser()?.toPairUser()
                 emit(Resource.Success(data = response))
             } catch (e: HttpException) {
-                emit(Resource.Error(message = UiText.StringResource(R.string.an_unknown_error_occurred)))
+                emit(
+                    Resource.Error(
+                        message = UiText.StringResource(R.string.an_unknown_error_occurred)
+                    )
+                )
             } catch (e: IOException) {
-                emit(Resource.Error(message = UiText.StringResource(R.string.an_unknown_error_occurred)))
+                emit(
+                    Resource.Error(
+                        message = UiText.StringResource(R.string.an_unknown_error_occurred)
+                    )
+                )
             }
         }
     }

@@ -77,7 +77,7 @@ fun CreatePostScreen(
     // Local Variables
     val context = LocalContext.current
 
-    //Launch Effect
+    // Launch Effect
     LaunchedEffect(createPostViewModel, context) {
         createPostViewModel.resultChannel.collect { uiEvent ->
             when (uiEvent) {
@@ -145,7 +145,9 @@ fun CreatePostScreen(
                         }
                         false -> {
                             IconButton(
-                                onClick = { createPostViewModel.onEvent(CreatePostEvent.CreatePost) },
+                                onClick = {
+                                    createPostViewModel.onEvent(CreatePostEvent.CreatePost)
+                                },
                                 modifier = Modifier.animateContentSize()
                             ) {
                                 Icon(
@@ -153,7 +155,6 @@ fun CreatePostScreen(
                                     contentDescription = stringResource(R.string.done)
                                 )
                             }
-
                         }
                     }
                 }

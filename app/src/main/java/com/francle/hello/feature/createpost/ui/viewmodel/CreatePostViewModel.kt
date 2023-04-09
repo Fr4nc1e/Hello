@@ -13,13 +13,13 @@ import com.francle.hello.core.util.Constants
 import com.francle.hello.feature.createpost.domain.repository.CreatePostRepository
 import com.francle.hello.feature.createpost.ui.presentation.event.CreatePostEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class CreatePostViewModel @Inject constructor(
@@ -48,7 +48,7 @@ class CreatePostViewModel @Inject constructor(
     }
 
     fun onEvent(event: CreatePostEvent) {
-        when(event) {
+        when (event) {
             is CreatePostEvent.InputPostText -> {
                 _postText.update {
                     it.copy(text = event.text)
@@ -57,7 +57,10 @@ class CreatePostViewModel @Inject constructor(
 
             CreatePostEvent.CreatePost -> {
                 viewModelScope.launch {
-                    if (_postText.value.text.isBlank() && _chosenContentUriList.value.isNullOrEmpty()) {
+                    if (
+                        _postText.value.text.isBlank() &&
+                        _chosenContentUriList.value.isNullOrEmpty()
+                    ) {
                         _resultChannel.send(
                             UiEvent.Message(
                                 UiText.StringResource(R.string.can_not_be_all_empty)

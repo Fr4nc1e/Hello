@@ -21,7 +21,6 @@ import com.francle.hello.R
 import com.francle.hello.core.ui.theme.ProfilePictureSizeMedium
 import com.francle.hello.core.ui.theme.SpaceSmall
 
-
 @Composable
 fun PairRow(
     modifier: Modifier,
@@ -29,7 +28,7 @@ fun PairRow(
     onPairClick: () -> Unit
 ) {
     Box(
-        modifier = modifier,
+        modifier = modifier
     ) {
         Box(
             modifier = Modifier

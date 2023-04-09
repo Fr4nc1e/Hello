@@ -12,13 +12,13 @@ import com.francle.hello.feature.pair.domain.models.PairUser
 import com.francle.hello.feature.pair.domain.repository.PairRepository
 import com.francle.hello.feature.pair.ui.event.PairEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class PairViewModel @Inject constructor(

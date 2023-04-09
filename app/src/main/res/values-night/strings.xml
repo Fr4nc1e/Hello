@@ -56,4 +56,6 @@
     <string name="notification">Notification</string>
     <string name="clear">Clear</string>
     <string name="sign_up">Sign up</string>
+    <string name="network_error_happens">Network error happens.</string>
+    <string name="local_error_happens">Local error happens.</string>
 </resources>

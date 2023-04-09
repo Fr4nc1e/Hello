@@ -14,13 +14,13 @@ import com.francle.hello.feature.home.domain.model.Post
 import com.francle.hello.feature.home.domain.repository.PostRepository
 import com.francle.hello.feature.home.ui.presentation.event.HomeEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -123,7 +123,8 @@ class HomeViewModel @Inject constructor(
                                 is Resource.Error -> {
                                     _responseChannel.send(
                                         result.message ?: UiText.StringResource(
-                                            R.string.an_unknown_error_occurred)
+                                            R.string.an_unknown_error_occurred
+                                        )
                                     )
                                 }
                                 is Resource.Success -> {

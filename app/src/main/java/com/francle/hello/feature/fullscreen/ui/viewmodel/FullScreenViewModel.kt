@@ -13,13 +13,13 @@ import com.francle.hello.feature.fullscreen.ui.presentation.event.FullScreenEven
 import com.francle.hello.feature.home.domain.model.Post
 import com.google.android.exoplayer2.Player
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class FullScreenViewModel @Inject constructor(
@@ -61,8 +61,12 @@ class FullScreenViewModel @Inject constructor(
                             )
                             _dropMenuVisible.update { !it }
                         } else {
-                            _uiEventChannel.send(UiEvent.Message(
-                                message = UiText.StringResource(R.string.an_unknown_error_occurred))
+                            _uiEventChannel.send(
+                                UiEvent.Message(
+                                    message = UiText.StringResource(
+                                        R.string.an_unknown_error_occurred
+                                    )
+                                )
                             )
                         }
                     }

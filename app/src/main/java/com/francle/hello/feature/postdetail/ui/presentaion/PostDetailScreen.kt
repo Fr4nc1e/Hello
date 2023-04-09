@@ -161,10 +161,12 @@ fun PostDetailScreen(
                         }
                     )
 
-                    postText?.let { text -> Text(
-                        text = text,
-                        modifier = Modifier.padding(horizontal = SpaceSmall)
-                    ) }
+                    postText?.let { text ->
+                        Text(
+                            text = text,
+                            modifier = Modifier.padding(horizontal = SpaceSmall)
+                        )
+                    }
 
                     PostMediaContent(
                         modifier = Modifier
@@ -174,7 +176,7 @@ fun PostDetailScreen(
                         onMediaItemClick = { index ->
                             onNavigate(
                                 Destination.FullScreenView.route +
-                                        "/${post.toJson()?.urlEncode()}" + "/$index"
+                                    "/${post.toJson()?.urlEncode()}" + "/$index"
                             )
                         }
                     )
@@ -183,6 +185,7 @@ fun PostDetailScreen(
                         Divider()
                         BottomRow(
                             modifier = Modifier.fillMaxWidth(),
+                            likeState = false,
                             onCommentClick = {},
                             onRepostClick = {},
                             onLikeClick = {},

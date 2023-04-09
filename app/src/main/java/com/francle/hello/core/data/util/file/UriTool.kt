@@ -62,4 +62,3 @@ fun Bitmap.toUri(context: Context): Uri? {
 
     return imageUri
 }
-

@@ -117,7 +117,9 @@ fun FullScreen(
                         fullScreenViewModel.onEvent(FullScreenEvent.NavigateUp)
                     },
                     actions = {
-                        IconButton(onClick = { fullScreenViewModel.onEvent(FullScreenEvent.ShowDropMenu) }) {
+                        IconButton(onClick = {
+                            fullScreenViewModel.onEvent(FullScreenEvent.ShowDropMenu)
+                        }) {
                             Icon(
                                 imageVector = Icons.Filled.MoreVert,
                                 contentDescription = stringResource(R.string.drop_menu)
@@ -125,14 +127,18 @@ fun FullScreen(
                         }
                         DropdownMenu(
                             expanded = dropMenuVisibility,
-                            onDismissRequest = { fullScreenViewModel.onEvent(FullScreenEvent.ShowDropMenu) }
+                            onDismissRequest = {
+                                fullScreenViewModel.onEvent(FullScreenEvent.ShowDropMenu)
+                            }
                         ) {
                             DropdownMenuItem(
                                 text = { Text(text = stringResource(id = R.string.download)) },
-                                leadingIcon = { Icon(
-                                    imageVector = Icons.Filled.Download,
-                                    contentDescription = stringResource(id = R.string.download)
-                                ) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Filled.Download,
+                                        contentDescription = stringResource(id = R.string.download)
+                                    )
+                                },
                                 onClick = {
                                     fullScreenViewModel.onEvent(
                                         FullScreenEvent.DownloadMedia(pairs[pagerState.currentPage])

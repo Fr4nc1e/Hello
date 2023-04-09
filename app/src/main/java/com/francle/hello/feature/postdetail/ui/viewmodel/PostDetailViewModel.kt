@@ -15,6 +15,7 @@ import com.francle.hello.feature.home.domain.model.Post
 import com.francle.hello.feature.home.domain.repository.PostRepository
 import com.francle.hello.feature.postdetail.ui.event.DetailEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +23,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class PostDetailViewModel @Inject constructor(
@@ -51,8 +51,10 @@ class PostDetailViewModel @Inject constructor(
                     when (result) {
                         is Resource.Error -> {
                             _responseChannel.send(
-                                UiEvent.Message(result.message ?: UiText.StringResource(
-                                    R.string.an_unknown_error_occurred)
+                                UiEvent.Message(
+                                    result.message ?: UiText.StringResource(
+                                        R.string.an_unknown_error_occurred
+                                    )
                                 )
                             )
                         }
@@ -85,8 +87,10 @@ class PostDetailViewModel @Inject constructor(
                             when (result) {
                                 is Resource.Error -> {
                                     _responseChannel.send(
-                                        UiEvent.Message(result.message ?: UiText.StringResource(
-                                            R.string.an_unknown_error_occurred)
+                                        UiEvent.Message(
+                                            result.message ?: UiText.StringResource(
+                                                R.string.an_unknown_error_occurred
+                                            )
                                         )
                                     )
                                 }

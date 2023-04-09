@@ -85,7 +85,7 @@ fun PairScreen(
             )
         }
 
-        //User info at the bottom start of the screen
+        // User info at the bottom start of the screen
         pairUser?.also { pairUser ->
             PairUserInfo(
                 modifier = Modifier

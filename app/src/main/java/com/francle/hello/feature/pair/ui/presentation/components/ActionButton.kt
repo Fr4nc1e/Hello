@@ -36,7 +36,7 @@ fun ActionButton(
                 .size(ProfilePictureSizeMedium)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surface)
-                .clickable { onDislikeClick()},
+                .clickable { onDislikeClick() },
             contentAlignment = Alignment.Center
         ) {
             Icon(
