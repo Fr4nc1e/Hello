@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francle.hello.R
-import com.francle.hello.core.data.util.call.Resource
+import com.francle.hello.core.data.call.Resource
 import com.francle.hello.core.ui.event.UiEvent
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.core.util.Constants

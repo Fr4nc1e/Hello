@@ -1,7 +1,7 @@
 package com.francle.hello.feature.pair.data.repository
 
 import com.francle.hello.R
-import com.francle.hello.core.data.util.call.Resource
+import com.francle.hello.core.data.call.Resource
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.feature.pair.data.api.PairApi
 import com.francle.hello.feature.pair.domain.models.PairUser

@@ -49,9 +49,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dokar.sheets.BottomSheetLayout
 import com.dokar.sheets.rememberBottomSheetState
 import com.francle.hello.R
-import com.francle.hello.core.ui.hub.navigation.destination.Destination
-import com.francle.hello.core.ui.hub.navigation.util.toJson
-import com.francle.hello.core.ui.hub.navigation.util.urlEncode
+import com.francle.hello.core.ui.hub.presentation.navigation.destination.Destination
+import com.francle.hello.core.ui.hub.presentation.navigation.util.toJson
+import com.francle.hello.core.ui.hub.presentation.navigation.util.urlEncode
 import com.francle.hello.core.ui.theme.SpaceMedium
 import com.francle.hello.core.ui.theme.SpaceSmall
 import com.francle.hello.core.ui.util.asString

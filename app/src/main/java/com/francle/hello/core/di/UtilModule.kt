@@ -2,8 +2,8 @@ package com.francle.hello.core.di
 
 import android.app.Application
 import android.media.MediaMetadataRetriever
-import com.francle.hello.core.data.util.download.Downloader
-import com.francle.hello.core.data.util.download.DownloaderImpl
+import com.francle.hello.core.data.download.Downloader
+import com.francle.hello.core.data.download.DownloaderImpl
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import dagger.Module

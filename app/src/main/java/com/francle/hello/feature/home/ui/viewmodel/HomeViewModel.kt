@@ -6,8 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francle.hello.R
-import com.francle.hello.core.data.util.call.Resource
-import com.francle.hello.core.data.util.page.PagingManager
+import com.francle.hello.core.data.call.Resource
+import com.francle.hello.core.data.page.PagingManager
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.core.util.Constants
 import com.francle.hello.feature.home.domain.models.Post

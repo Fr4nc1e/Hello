@@ -11,7 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
-import com.francle.hello.core.ui.hub.AppHub
+import com.francle.hello.core.ui.hub.presentation.AppHub
 import com.francle.hello.core.ui.theme.HelloTheme
 import dagger.hilt.android.AndroidEntryPoint
 

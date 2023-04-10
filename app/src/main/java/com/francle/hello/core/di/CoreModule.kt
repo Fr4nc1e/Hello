@@ -3,9 +3,6 @@ package com.francle.hello.core.di
 import android.app.Application
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import com.francle.hello.core.data.api.AuthApi
-import com.francle.hello.core.data.repository.AuthRepositoryImpl
-import com.francle.hello.core.domain.repository.AuthRepository
 import com.francle.hello.core.util.Constants
 import com.google.gson.Gson
 import dagger.Module
@@ -15,8 +12,6 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -45,28 +40,8 @@ object CoreModule {
 
     @Provides
     @Singleton
-    fun provideAuthApi(client: OkHttpClient): AuthApi {
-        return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(AuthApi::class.java)
-    }
-
-    @Provides
-    @Singleton
     fun providePref(app: Application): SharedPreferences {
         return app.getSharedPreferences("prefs", MODE_PRIVATE)
-    }
-
-    @Provides
-    @Singleton
-    fun provideAuthRepository(
-        api: AuthApi,
-        preferences: SharedPreferences
-    ): AuthRepository {
-        return AuthRepositoryImpl(api = api, pref = preferences)
     }
 
     @Provides
