@@ -5,8 +5,6 @@ data class User(
     val email: String,
     val username: String,
     val hashTag: String,
-    val password: String,
-    val salt: String,
     val age: Int? = null,
     val profileImageUrl: String? = null,
     val bannerImageUrl: String? = null,

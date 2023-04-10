@@ -1,6 +1,7 @@
 package com.francle.hello.feature.profile.ui.presentation
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -27,6 +28,7 @@ import com.francle.hello.R
 import com.francle.hello.core.ui.event.UiEvent
 import com.francle.hello.core.ui.util.asString
 import com.francle.hello.feature.profile.ui.event.ProfileEvent
+import com.francle.hello.feature.profile.ui.presentation.components.BannerComponent
 import com.francle.hello.feature.profile.ui.presentation.components.ProfileTopAppBar
 import com.francle.hello.feature.profile.ui.viewmodel.ProfileViewModel
 
@@ -69,11 +71,38 @@ fun ProfileScreen(
         }
     }
 
+    Column(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+    ) {
+        // Top App Bar
+        ProfileTopAppBar(
+            modifier = Modifier.fillMaxWidth(),
+            showDropMenu = showDropMenu,
+            isOwnProfile = isOwnProfile,
+            scrollBehavior = scrollBehavior,
+            onNavigationIconClick = { onNavigateUp() },
+            onClickMoreVert = { profileViewModel.onEvent(ProfileEvent.ClickMoreVert) },
+            onClickLogOut = { profileViewModel.onEvent(ProfileEvent.ClickLogOut) },
+            onEditClick = {}
+        )
+
+        BannerComponent(
+            modifier = Modifier.fillMaxWidth().aspectRatio(16f / 9f),
+            user = user
+        )
+    }
+
     if (showAlertDialog) {
         AlertDialog(
             onDismissRequest = { profileViewModel.onEvent(ProfileEvent.ClickLogOut) },
             confirmButton = {
-                TextButton(onClick = { profileViewModel.onEvent(ProfileEvent.LogOut) }) {
+                TextButton(
+                    onClick = {
+                        profileViewModel.onEvent(ProfileEvent.ClickLogOut)
+                        profileViewModel.onEvent(ProfileEvent.ClickMoreVert)
+                        profileViewModel.onEvent(ProfileEvent.LogOut)
+                    }
+                ) {
                     Text(text = stringResource(R.string.yes))
                 }
             },
@@ -94,22 +123,5 @@ fun ProfileScreen(
             },
             shape = RoundedCornerShape(16.dp)
         )
-    }
-
-    Column(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-    ) {
-        // Top App Bar
-        ProfileTopAppBar(
-            modifier = Modifier.fillMaxWidth(),
-            showDropMenu = showDropMenu,
-            isOwnProfile = isOwnProfile,
-            scrollBehavior = scrollBehavior,
-            onNavigationIconClick = { onNavigateUp() },
-            onClickMoreVert = { profileViewModel.onEvent(ProfileEvent.ClickMoreVert) },
-            onClickLogOut = { profileViewModel.onEvent(ProfileEvent.ClickLogOut) }
-        )
-        
-        Text(text = user.toString())
     }
 }

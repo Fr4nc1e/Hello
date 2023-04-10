@@ -3,6 +3,7 @@ package com.francle.hello.feature.profile.ui.presentation.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
@@ -26,7 +27,8 @@ fun ProfileTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior,
     onNavigationIconClick: () -> Unit,
     onClickMoreVert: () -> Unit,
-    onClickLogOut: () -> Unit
+    onClickLogOut: () -> Unit,
+    onEditClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -62,6 +64,14 @@ fun ProfileTopAppBar(
                             )
                         },
                         onClick = { onClickLogOut() }
+                    )
+
+                    DropdownMenuItem(
+                        text = { Text(text = "Modify profile") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.ModeEdit, contentDescription = null)
+                        },
+                        onClick = { onEditClick() }
                     )
                 }
             }
