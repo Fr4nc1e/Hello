@@ -1,15 +1,20 @@
 package com.francle.hello.feature.like.di
 
 import com.francle.hello.core.util.Constants
-import com.francle.hello.feature.like.domain.repository.LikeRepository
 import com.francle.hello.feature.like.data.api.LikeApi
 import com.francle.hello.feature.like.data.repository.LikeRepositoryImpl
+import com.francle.hello.feature.like.domain.repository.LikeRepository
+import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+@Module
+@InstallIn(SingletonComponent::class)
 object LikeModule {
     @Provides
     @Singleton

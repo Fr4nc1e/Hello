@@ -7,4 +7,5 @@ sealed class FullScreenEvent {
     object NavigateUp : FullScreenEvent()
     data class DownloadMedia(val postContentPair: PostContentPair) : FullScreenEvent()
     object ShowDropMenu : FullScreenEvent()
+    object ClickLikeButton : FullScreenEvent()
 }

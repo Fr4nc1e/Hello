@@ -1,16 +1,22 @@
 package com.francle.hello.feature.fullscreen.ui.viewmodel
 
+import android.content.SharedPreferences
 import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francle.hello.R
+import com.francle.hello.core.data.util.call.Resource
 import com.francle.hello.core.data.util.download.Downloader
 import com.francle.hello.core.ui.event.UiEvent
 import com.francle.hello.core.ui.hub.navigation.util.fromJson
 import com.francle.hello.core.ui.util.UiText
+import com.francle.hello.core.util.Constants
+import com.francle.hello.core.util.ForwardEntityType
 import com.francle.hello.feature.fullscreen.ui.presentation.event.FullScreenEvent
 import com.francle.hello.feature.home.domain.models.Post
+import com.francle.hello.feature.like.data.request.LikeRequest
+import com.francle.hello.feature.like.domain.repository.LikeRepository
 import com.google.android.exoplayer2.Player
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -25,13 +31,21 @@ import kotlinx.coroutines.launch
 class FullScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     val player: Player,
-    private val downloader: Downloader
+    private val downloader: Downloader,
+    private val likeRepository: LikeRepository,
+    private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
+    private val userId
+        get() = sharedPreferences.getString(Constants.KEY_USER_ID, "") ?: ""
+
     private val _post = MutableStateFlow<Post?>(null)
     val post = _post.asStateFlow()
 
     private val _index = MutableStateFlow<Int?>(null)
     val index = _index.asStateFlow()
+
+    private val _likeState = MutableStateFlow(false)
+    val likeState = _likeState.asStateFlow()
 
     private val _dropMenuVisible = MutableStateFlow(false)
     val dropMenuVisible = _dropMenuVisible.asStateFlow()
@@ -43,6 +57,7 @@ class FullScreenViewModel @Inject constructor(
         savedStateHandle.get<String>("post")?.let {
             val post = it.fromJson(Post::class.java)
             _post.update { post }
+            checkLikeState()
         }
         savedStateHandle.get<Int>("index")?.let { i ->
             _index.update { i }
@@ -85,6 +100,90 @@ class FullScreenViewModel @Inject constructor(
             }
             FullScreenEvent.ShowDropMenu -> {
                 _dropMenuVisible.update { !it }
+            }
+            FullScreenEvent.ClickLikeButton -> {
+                when (_likeState.value) {
+                    false -> {
+                        like()
+                    }
+                    true -> {
+                        dislike()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun dislike() {
+        viewModelScope.launch {
+            _post.value?.also { post ->
+                likeRepository.dislike(
+                    arrowBackUserId = userId,
+                    arrowForwardUserId = post.userId,
+                    arrowForwardEntityId = post.id,
+                    arrowForwardEntityType = ForwardEntityType.POST.ordinal
+                ).also { result ->
+                    when (result) {
+                        is Resource.Error -> {
+                            checkLikeState()
+                        }
+                        is Resource.Success -> {
+                            _likeState.update { false }
+                            checkLikeState()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun like() {
+        viewModelScope.launch {
+            _post.value?.also { post ->
+                likeRepository.like(
+                    LikeRequest(
+                        arrowBackUserId = userId,
+                        arrowForwardUserId = post.userId,
+                        arrowForwardEntityId = post.id,
+                        arrowForwardEntityType = ForwardEntityType.POST.ordinal
+                    )
+                ).also { result ->
+                    when (result) {
+                        is Resource.Error -> {
+                            checkLikeState()
+                        }
+                        is Resource.Success -> {
+                            _likeState.update { true }
+                            checkLikeState()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkLikeState() {
+        viewModelScope.launch {
+            _post.value?.also { post ->
+                likeRepository.checkLikeState(
+                    arrowBackUserId = userId,
+                    arrowForwardEntityId = post.id
+                ).also { result ->
+                    when (result) {
+                        is Resource.Error -> {}
+                        is Resource.Success -> {
+                            when (result.data) {
+                                true -> {
+                                    if (!_likeState.value) _likeState.update { true }
+                                }
+                                false -> {
+                                    if (_likeState.value) _likeState.update { false }
+                                }
+                                null -> {}
+                            }
+                        }
+                    }
+                }
             }
         }
     }

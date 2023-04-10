@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +35,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.francle.hello.R
 import com.francle.hello.core.ui.event.UiEvent
@@ -61,9 +61,10 @@ fun FullScreen(
     fullScreenViewModel: FullScreenViewModel = hiltViewModel()
 ) {
     // ViewModel Variables
-    val post = fullScreenViewModel.post.collectAsState().value
-    val index = fullScreenViewModel.index.collectAsState().value
-    val dropMenuVisibility = fullScreenViewModel.dropMenuVisible.collectAsState().value
+    val post = fullScreenViewModel.post.collectAsStateWithLifecycle().value
+    val index = fullScreenViewModel.index.collectAsStateWithLifecycle().value
+    val dropMenuVisibility = fullScreenViewModel.dropMenuVisible.collectAsStateWithLifecycle().value
+    val likeState = fullScreenViewModel.likeState.collectAsStateWithLifecycle().value
 
     // Local Variables
     val context = LocalContext.current
@@ -152,9 +153,12 @@ fun FullScreen(
             bottomBar = {
                 FullScreenBottomBar(
                     modifier = Modifier.fillMaxWidth(),
+                    likeState = likeState,
                     onCommentClick = {},
                     onRepostClick = {},
-                    onLikeClick = {},
+                    onLikeClick = {
+                        fullScreenViewModel.onEvent(FullScreenEvent.ClickLikeButton)
+                    },
                     onShareClick = {}
                 )
             }

@@ -3,7 +3,6 @@ package com.francle.hello.feature.home.ui.presentation.components.postcard.ui
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -70,8 +69,6 @@ fun PostCard(
             hashTag = post.hashTag,
             onBottomSheetExpand = onBottomSheetExpand
         )
-
-        Text(text = postCardViewModel.toString())
 
         post.postText?.let {
             ExpandableText(

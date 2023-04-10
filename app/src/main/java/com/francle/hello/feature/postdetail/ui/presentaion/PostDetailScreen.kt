@@ -34,17 +34,25 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dokar.sheets.BottomSheetLayout
 import com.dokar.sheets.rememberBottomSheetState
 import com.francle.hello.R
@@ -55,6 +63,7 @@ import com.francle.hello.core.ui.hub.navigation.util.urlEncode
 import com.francle.hello.core.ui.theme.SpaceMedium
 import com.francle.hello.core.ui.theme.SpaceSmall
 import com.francle.hello.core.ui.util.asString
+import com.francle.hello.core.util.ForwardEntityType
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.BottomRow
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.HeadRow
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.PostMediaContent
@@ -73,9 +82,10 @@ fun PostDetailScreen(
     postDetailViewModel: PostDetailViewModel = hiltViewModel()
 ) {
     // ViewModel State
-    val post = postDetailViewModel.post.collectAsState().value
-    val inputComment = postDetailViewModel.inputComment.collectAsState().value.text
-    val isOwnPost = postDetailViewModel.isOwnPost.collectAsState().value
+    val post = postDetailViewModel.post.collectAsStateWithLifecycle().value
+    val inputComment = postDetailViewModel.inputComment.collectAsStateWithLifecycle().value.text
+    val isOwnPost = postDetailViewModel.isOwnPost.collectAsStateWithLifecycle().value
+    val likeState = postDetailViewModel.likeState.collectAsStateWithLifecycle().value
 
     // Local State
     val context = LocalContext.current
@@ -83,6 +93,24 @@ fun PostDetailScreen(
     val bottomSheetState = rememberBottomSheetState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val scrollState = rememberScrollState()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var lifecycle by remember { mutableStateOf(Lifecycle.Event.ON_CREATE) }
+
+    // Launch Effect
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            lifecycle = event
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    LaunchedEffect(lifecycle) {
+        postDetailViewModel.onEvent(DetailEvent.CheckLikeState)
+    }
 
     // LaunchEffect
     LaunchedEffect(postDetailViewModel.responseChannel, context) {
@@ -94,7 +122,7 @@ fun PostDetailScreen(
                         duration = SnackbarDuration.Short
                     )
                 }
-                is UiEvent.Navigate -> {}
+                is UiEvent.Navigate -> { onNavigate(uiEvent.route) }
                 UiEvent.NavigateUp -> {
                     onNavigateUp()
                 }
@@ -185,10 +213,16 @@ fun PostDetailScreen(
                         Divider()
                         BottomRow(
                             modifier = Modifier.fillMaxWidth(),
-                            likeState = false,
+                            likeState = likeState,
                             onCommentClick = {},
                             onRepostClick = {},
-                            onLikeClick = {},
+                            onLikeClick = {
+                                postDetailViewModel.onEvent(
+                                    DetailEvent.ClickLikeButton(
+                                        ForwardEntityType.POST.ordinal
+                                    )
+                                )
+                            },
                             onShareClick = {}
                         )
                         Divider()

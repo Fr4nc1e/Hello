@@ -11,12 +11,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.francle.hello.R
 
 @Composable
 fun FullScreenBottomBar(
     modifier: Modifier,
+    likeState: Boolean,
     onCommentClick: () -> Unit,
     onRepostClick: () -> Unit,
     onLikeClick: () -> Unit,
@@ -46,7 +48,15 @@ fun FullScreenBottomBar(
         IconButton(onClick = { onLikeClick() }) {
             Icon(
                 imageVector = Icons.Filled.FavoriteBorder,
-                contentDescription = stringResource(R.string.like)
+                contentDescription = stringResource(R.string.like),
+                tint = when (likeState) {
+                    true -> {
+                        Color.Red
+                    }
+                    false -> {
+                        MaterialTheme.colorScheme.inverseOnSurface
+                    }
+                }
             )
         }
 
