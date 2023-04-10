@@ -19,7 +19,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.francle.hello.core.ui.theme.SpaceMedium
 import com.francle.hello.core.ui.theme.SpaceSmall
-import com.francle.hello.feature.home.domain.model.Post
+import com.francle.hello.feature.home.domain.models.Post
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.BottomRow
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.ExpandableText
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.HeadRow

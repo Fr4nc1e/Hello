@@ -10,7 +10,7 @@ import com.francle.hello.core.data.util.call.Resource
 import com.francle.hello.core.data.util.page.PagingManager
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.core.util.Constants
-import com.francle.hello.feature.home.domain.model.Post
+import com.francle.hello.feature.home.domain.models.Post
 import com.francle.hello.feature.home.domain.repository.PostRepository
 import com.francle.hello.feature.home.ui.presentation.event.HomeEvent
 import dagger.hilt.android.lifecycle.HiltViewModel

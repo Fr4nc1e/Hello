@@ -2,7 +2,7 @@ package com.francle.hello.feature.home.ui.presentation.components.postcard.viewm
 
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
-import com.francle.hello.feature.home.domain.repository.LikeRepository
+import com.francle.hello.feature.like.domain.repository.LikeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

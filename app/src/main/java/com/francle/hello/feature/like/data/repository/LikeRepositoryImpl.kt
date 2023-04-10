@@ -1,12 +1,12 @@
-package com.francle.hello.feature.home.data.repository
+package com.francle.hello.feature.like.data.repository
 
 import com.francle.hello.R
 import com.francle.hello.core.data.util.call.Resource
 import com.francle.hello.core.ui.util.UiText
-import com.francle.hello.feature.home.data.api.LikeApi
-import com.francle.hello.feature.home.data.request.LikeRequest
-import com.francle.hello.feature.home.domain.model.SingleUserInfo
-import com.francle.hello.feature.home.domain.repository.LikeRepository
+import com.francle.hello.feature.like.data.api.LikeApi
+import com.francle.hello.feature.like.data.request.LikeRequest
+import com.francle.hello.feature.like.domain.models.SingleUserInfo
+import com.francle.hello.feature.like.domain.repository.LikeRepository
 import java.io.IOException
 import retrofit2.HttpException
 

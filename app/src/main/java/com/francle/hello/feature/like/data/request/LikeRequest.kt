@@ -1,4 +1,4 @@
-package com.francle.hello.feature.home.data.request
+package com.francle.hello.feature.like.data.request
 
 data class LikeRequest(
     val arrowBackUserId: String,

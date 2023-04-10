@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.francle.hello.core.data.util.call.Resource
 import com.francle.hello.core.util.Constants
 import com.francle.hello.core.util.ForwardEntityType
-import com.francle.hello.feature.home.data.request.LikeRequest
+import com.francle.hello.feature.like.data.request.LikeRequest
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.event.PostCardEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

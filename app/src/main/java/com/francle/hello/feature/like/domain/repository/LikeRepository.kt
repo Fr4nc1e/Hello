@@ -1,8 +1,8 @@
-package com.francle.hello.feature.home.domain.repository
+package com.francle.hello.feature.like.domain.repository
 
 import com.francle.hello.core.data.util.call.Resource
-import com.francle.hello.feature.home.data.request.LikeRequest
-import com.francle.hello.feature.home.domain.model.SingleUserInfo
+import com.francle.hello.feature.like.data.request.LikeRequest
+import com.francle.hello.feature.like.domain.models.SingleUserInfo
 
 interface LikeRepository {
     suspend fun like(likeRequest: LikeRequest): Resource<Unit>

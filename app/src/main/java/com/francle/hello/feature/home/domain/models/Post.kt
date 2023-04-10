@@ -1,4 +1,4 @@
-package com.francle.hello.feature.home.domain.model
+package com.francle.hello.feature.home.domain.models
 
 data class Post(
     val userId: String,

@@ -55,7 +55,7 @@ import com.francle.hello.core.ui.hub.navigation.util.urlEncode
 import com.francle.hello.core.ui.theme.SpaceMedium
 import com.francle.hello.core.ui.theme.SpaceSmall
 import com.francle.hello.core.ui.util.asString
-import com.francle.hello.feature.home.domain.model.Post
+import com.francle.hello.feature.home.domain.models.Post
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.PostCard
 import com.francle.hello.feature.home.ui.presentation.event.HomeEvent
 import com.francle.hello.feature.home.ui.viewmodel.HomeViewModel

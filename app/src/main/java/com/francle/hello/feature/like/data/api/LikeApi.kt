@@ -1,8 +1,8 @@
-package com.francle.hello.feature.home.data.api
+package com.francle.hello.feature.like.data.api
 
 import com.francle.hello.core.util.Constants
-import com.francle.hello.feature.home.data.request.LikeRequest
-import com.francle.hello.feature.home.data.response.LikeUserInfoResponse
+import com.francle.hello.feature.like.data.request.LikeRequest
+import com.francle.hello.feature.like.data.response.LikeUserInfoResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET

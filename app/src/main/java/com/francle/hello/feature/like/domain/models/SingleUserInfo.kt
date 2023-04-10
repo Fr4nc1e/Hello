@@ -1,4 +1,4 @@
-package com.francle.hello.feature.home.domain.model
+package com.francle.hello.feature.like.domain.models
 
 data class SingleUserInfo(
     val userId: String,

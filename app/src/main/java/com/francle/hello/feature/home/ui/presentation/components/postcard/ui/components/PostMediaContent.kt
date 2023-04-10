@@ -30,7 +30,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.francle.hello.R
 import com.francle.hello.core.ui.theme.IconSizeLarge
 import com.francle.hello.core.ui.theme.SpaceSmall
-import com.francle.hello.feature.home.domain.model.PostContentPair
+import com.francle.hello.feature.home.domain.models.PostContentPair
 import com.francle.hello.feature.home.ui.viewmodel.HomeViewModel
 
 @Composable

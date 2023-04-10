@@ -1,6 +1,6 @@
-package com.francle.hello.feature.home.data.response
+package com.francle.hello.feature.like.data.response
 
-import com.francle.hello.feature.home.domain.model.SingleUserInfo
+import com.francle.hello.feature.like.domain.models.SingleUserInfo
 
 data class LikeUserInfoResponse(
     val userId: String,

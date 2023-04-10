@@ -10,7 +10,7 @@ import com.francle.hello.core.ui.event.UiEvent
 import com.francle.hello.core.ui.hub.navigation.util.fromJson
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.feature.fullscreen.ui.presentation.event.FullScreenEvent
-import com.francle.hello.feature.home.domain.model.Post
+import com.francle.hello.feature.home.domain.models.Post
 import com.google.android.exoplayer2.Player
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

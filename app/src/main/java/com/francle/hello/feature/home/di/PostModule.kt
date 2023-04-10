@@ -1,11 +1,8 @@
 package com.francle.hello.feature.home.di
 
 import com.francle.hello.core.util.Constants
-import com.francle.hello.feature.home.data.api.LikeApi
 import com.francle.hello.feature.home.data.api.PostApi
-import com.francle.hello.feature.home.data.repository.LikeRepositoryImpl
 import com.francle.hello.feature.home.data.repository.PostRepositoryImpl
-import com.francle.hello.feature.home.domain.repository.LikeRepository
 import com.francle.hello.feature.home.domain.repository.PostRepository
 import dagger.Module
 import dagger.Provides
@@ -32,24 +29,7 @@ object PostModule {
 
     @Provides
     @Singleton
-    fun provideLikeApi(client: OkHttpClient): LikeApi {
-        return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(LikeApi::class.java)
-    }
-
-    @Provides
-    @Singleton
     fun providePostRepository(api: PostApi): PostRepository {
         return PostRepositoryImpl(api)
-    }
-
-    @Provides
-    @Singleton
-    fun provideLikeRepository(api: LikeApi): LikeRepository {
-        return LikeRepositoryImpl(api)
     }
 }

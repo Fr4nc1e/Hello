@@ -1,6 +1,6 @@
 package com.francle.hello.feature.home.ui.presentation.event
 
-import com.francle.hello.feature.home.domain.model.Post
+import com.francle.hello.feature.home.domain.models.Post
 
 sealed class HomeEvent {
     object Refresh : HomeEvent()
