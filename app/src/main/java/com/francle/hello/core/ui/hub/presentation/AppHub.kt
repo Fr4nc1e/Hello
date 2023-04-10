@@ -16,11 +16,11 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.francle.hello.R
 import com.francle.hello.core.ui.hub.presentation.navigation.Navigation
@@ -39,7 +39,7 @@ fun AppHub(
     val snackbarHostState = remember {
         SnackbarHostState()
     }
-    val curRoute = viewModel.curRoute.collectAsState().value
+    val curRoute = viewModel.curRoute.collectAsStateWithLifecycle().value
 
     LaunchedEffect(navHostController) {
         navHostController.currentBackStackEntryFlow.collect { backStackEntry ->
@@ -56,8 +56,7 @@ fun AppHub(
                 NavigationBottomBar(
                     modifier = Modifier.fillMaxWidth(),
                     curRoute = curRoute,
-                    onNavigate = navHostController::navigate,
-                    onPopBackStack = navHostController::popBackStack
+                    navHostController = navHostController
                 )
             }
         },

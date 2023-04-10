@@ -2,7 +2,6 @@ package com.francle.hello.feature.home.ui.viewmodel
 
 import android.content.SharedPreferences
 import android.media.MediaMetadataRetriever
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francle.hello.R
@@ -14,13 +13,13 @@ import com.francle.hello.feature.home.domain.models.Post
 import com.francle.hello.feature.home.domain.repository.PostRepository
 import com.francle.hello.feature.home.ui.presentation.event.HomeEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -28,7 +27,8 @@ class HomeViewModel @Inject constructor(
     sharedPref: SharedPreferences,
     val retriever: MediaMetadataRetriever
 ) : ViewModel() {
-    private val userId = mutableStateOf("")
+    private val _userId = MutableStateFlow("")
+    val userId = _userId.asStateFlow()
 
     private val _posts = MutableStateFlow(emptyList<Post?>())
     val posts = _posts.asStateFlow()
@@ -94,7 +94,9 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadNextItems()
-        userId.value = sharedPref.getString(Constants.KEY_USER_ID, "") ?: ""
+        sharedPref.getString(Constants.KEY_USER_ID, "")?.let { userId ->
+            _userId.update { userId }
+        }
     }
 
     fun onEvent(event: HomeEvent) {
@@ -143,7 +145,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onOwnPostJudge(postUserId: String): Boolean {
-        return userId.value == postUserId
+        return _userId.value == postUserId
     }
 
     private fun loadNextItems() {

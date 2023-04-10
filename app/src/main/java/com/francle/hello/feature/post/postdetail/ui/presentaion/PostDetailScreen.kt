@@ -126,6 +126,8 @@ fun PostDetailScreen(
                 UiEvent.NavigateUp -> {
                     onNavigateUp()
                 }
+
+                else -> {}
             }
         }
     }
@@ -186,6 +188,9 @@ fun PostDetailScreen(
                                 postDetailViewModel.onEvent(DetailEvent.IsOwnPost(userId))
                                 bottomSheetState.expand()
                             }
+                        },
+                        onProfileImageClick = {
+                            onNavigate(Destination.Profile.route + "/${post.userId}")
                         }
                     )
 

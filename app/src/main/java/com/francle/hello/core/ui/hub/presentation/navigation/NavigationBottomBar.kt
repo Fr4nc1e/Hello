@@ -9,14 +9,14 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavHostController
 import com.francle.hello.core.ui.hub.presentation.navigation.destination.BottomItems
 
 @Composable
 fun NavigationBottomBar(
     modifier: Modifier,
     curRoute: String,
-    onNavigate: (String) -> Unit,
-    onPopBackStack: () -> Unit
+    navHostController: NavHostController
 ) {
     NavigationBar(
         modifier = modifier
@@ -26,8 +26,11 @@ fun NavigationBottomBar(
                 selected = curRoute.startsWith(bottomItems.route),
                 onClick = {
                     if (curRoute != bottomItems.route) {
-                        onPopBackStack()
-                        onNavigate(bottomItems.route)
+                        navHostController.navigate(bottomItems.route) {
+                            popUpTo(curRoute) {
+                                inclusive = true
+                            }
+                        }
                     }
                 },
                 icon = {

@@ -10,6 +10,7 @@ object Constants {
     const val PAGE_SIZE = 20
 
     // Parameters
+    const val PARAM_USER_ID = "userId"
     const val ARROW_BACK_USER_ID = "arrow_back_user_id"
     const val ARROW_FORWARD_USER_ID = "arrow_forward_user_id"
     const val ARROW_FORWARD_ENTITY_ID = "arrow_forward_entity_id"

@@ -15,14 +15,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.francle.hello.R
 import com.francle.hello.feature.auth.splash.data.response.AuthResult
-import com.francle.hello.core.ui.hub.presentation.navigation.destination.Destination
 import com.francle.hello.feature.auth.splash.ui.viewmodel.SplashViewModel
 
 @Composable
 fun SplashScreen(
     modifier: Modifier,
-    onNavigate: (String) -> Unit,
-    onPopBackStack: () -> Unit,
+    onAuthorized: () -> Unit,
+    onUnAuthorized: () -> Unit,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -32,16 +31,13 @@ fun SplashScreen(
         viewModel.authResults.collect { result ->
             when (result) {
                 is AuthResult.Authorized -> {
-                    onPopBackStack()
-                    onNavigate(Destination.Home.route)
+                    onAuthorized()
                 }
                 is AuthResult.Unauthorized -> {
-                    onPopBackStack()
-                    onNavigate(Destination.Login.route)
+                    onUnAuthorized()
                 }
                 is AuthResult.UnknownError -> {
-                    onPopBackStack()
-                    onNavigate(Destination.Login.route)
+                    onUnAuthorized()
                 }
             }
         }

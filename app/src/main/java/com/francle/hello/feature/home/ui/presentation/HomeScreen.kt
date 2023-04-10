@@ -20,14 +20,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.HideSource
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PersonAddDisabled
 import androidx.compose.material.icons.filled.VerticalAlignTop
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -56,6 +53,7 @@ import com.francle.hello.core.ui.theme.SpaceMedium
 import com.francle.hello.core.ui.theme.SpaceSmall
 import com.francle.hello.core.ui.util.asString
 import com.francle.hello.feature.home.domain.models.Post
+import com.francle.hello.feature.home.ui.presentation.components.HomeTopAppBar
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.PostCard
 import com.francle.hello.feature.home.ui.presentation.event.HomeEvent
 import com.francle.hello.feature.home.ui.viewmodel.HomeViewModel
@@ -72,6 +70,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     // ViewModel Variables
+    val userId = homeViewModel.userId.collectAsStateWithLifecycle().value
     val posts = homeViewModel.posts.collectAsStateWithLifecycle().value
     val loading = homeViewModel.isLoading.collectAsStateWithLifecycle().value
     val isRefreshing = homeViewModel.isRefreshing.collectAsStateWithLifecycle().value
@@ -111,18 +110,9 @@ fun HomeScreen(
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             // Top App Bar
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(text = stringResource(id = R.string.home))
-                },
-                actions = {
-                    IconButton(onClick = { onNavigate(Destination.Notification.route) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Notifications,
-                            contentDescription = null
-                        )
-                    }
-                },
+            HomeTopAppBar(
+                onProfileImageClick = { onNavigate(Destination.Profile.route + "/$userId") },
+                onNotificationClick = { onNavigate(Destination.Notification.route) },
                 scrollBehavior = scrollBehavior
             )
 
@@ -183,7 +173,10 @@ fun HomeScreen(
                             },
                             onCommentClick = {},
                             onRepostClick = {},
-                            onShareClick = {}
+                            onShareClick = {},
+                            onProfileImageClick = {
+                                onNavigate(Destination.Profile.route + "/${post.userId}")
+                            }
                         )
                     }
                 }

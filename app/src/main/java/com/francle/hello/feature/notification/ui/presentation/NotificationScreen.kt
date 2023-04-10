@@ -53,6 +53,7 @@ fun NotificationScreen(
                 UiEvent.NavigateUp -> {
                     onNavigateUp()
                 }
+                else -> {}
             }
         }
     }

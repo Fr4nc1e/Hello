@@ -53,6 +53,7 @@ fun PairScreen(
                 }
                 is UiEvent.Navigate -> {}
                 UiEvent.NavigateUp -> {}
+                else -> {}
             }
         }
     }

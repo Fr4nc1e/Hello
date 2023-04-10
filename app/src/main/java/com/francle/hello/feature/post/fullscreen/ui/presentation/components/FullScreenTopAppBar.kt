@@ -1,6 +1,7 @@
 package com.francle.hello.feature.post.fullscreen.ui.presentation.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -35,6 +36,7 @@ fun FullScreenTopAppBar(
     username: String?,
     hashTag: String?,
     profileImageUrl: String?,
+    onProfileImageClick: () -> Unit,
     onNavigationIconClick: () -> Unit,
     actions: @Composable () -> Unit
 ) {
@@ -59,6 +61,9 @@ fun FullScreenTopAppBar(
                     modifier = Modifier
                         .size(ProfilePictureSizeSmall)
                         .clip(CircleShape)
+                        .clickable {
+                            onProfileImageClick()
+                        }
                 )
                 Text(
                     text = "/$username$hashTag",

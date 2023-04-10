@@ -12,4 +12,5 @@ sealed class Destination(val route: String) {
     object Chat : Destination("chat")
     object Profile : Destination("profile")
     object Notification : Destination("notification")
+    object Search : Destination("search")
 }

@@ -6,4 +6,5 @@ sealed class UiEvent {
     data class Navigate(val route: String) : UiEvent()
     object NavigateUp : UiEvent()
     data class Message(val message: UiText) : UiEvent()
+    object LogOut : UiEvent()
 }

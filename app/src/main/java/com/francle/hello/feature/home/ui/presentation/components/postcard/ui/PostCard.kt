@@ -34,7 +34,8 @@ fun PostCard(
     onMediaItemClick: (Int) -> Unit,
     onCommentClick: () -> Unit,
     onRepostClick: () -> Unit,
-    onShareClick: () -> Unit
+    onShareClick: () -> Unit,
+    onProfileImageClick: () -> Unit
 ) {
     // ViewModel
     val postCardViewModel = unifiedPostCardViewModel(postId = post.id)
@@ -67,7 +68,8 @@ fun PostCard(
             profileImageUrl = post.profileImageUrl,
             username = post.username,
             hashTag = post.hashTag,
-            onBottomSheetExpand = onBottomSheetExpand
+            onBottomSheetExpand = onBottomSheetExpand,
+            onProfileImageClick = onProfileImageClick
         )
 
         post.postText?.let {

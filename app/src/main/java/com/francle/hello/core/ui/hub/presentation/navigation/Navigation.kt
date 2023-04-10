@@ -12,15 +12,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.francle.hello.core.ui.hub.presentation.navigation.destination.Destination
-import com.francle.hello.feature.post.createpost.ui.presentation.CreatePostScreen
-import com.francle.hello.feature.post.fullscreen.ui.presentation.FullScreen
-import com.francle.hello.feature.home.ui.presentation.HomeScreen
 import com.francle.hello.feature.auth.login.ui.presentation.LoginScreen
-import com.francle.hello.feature.notification.ui.presentation.NotificationScreen
-import com.francle.hello.feature.pair.ui.presentation.PairScreen
-import com.francle.hello.feature.post.postdetail.ui.presentaion.PostDetailScreen
 import com.francle.hello.feature.auth.register.ui.presentation.RegisterScreen
 import com.francle.hello.feature.auth.splash.ui.presentation.SplashScreen
+import com.francle.hello.feature.home.ui.presentation.HomeScreen
+import com.francle.hello.feature.notification.ui.presentation.NotificationScreen
+import com.francle.hello.feature.pair.ui.presentation.PairScreen
+import com.francle.hello.feature.post.createpost.ui.presentation.CreatePostScreen
+import com.francle.hello.feature.post.fullscreen.ui.presentation.FullScreen
+import com.francle.hello.feature.post.postdetail.ui.presentaion.PostDetailScreen
+import com.francle.hello.feature.profile.ui.presentation.ProfileScreen
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
@@ -36,8 +37,20 @@ fun Navigation(
         composable(Destination.Splash.route) {
             SplashScreen(
                 modifier = Modifier.fillMaxSize(),
-                onNavigate = navHostController::navigate,
-                onPopBackStack = navHostController::popBackStack
+                onAuthorized = {
+                    navHostController.navigate(Destination.Home.route) {
+                        popUpTo(Destination.Splash.route) {
+                            inclusive = true
+                        }
+                    }
+                },
+                onUnAuthorized = {
+                    navHostController.navigate(Destination.Login.route) {
+                        popUpTo(Destination.Splash.route) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
         composable(Destination.Login.route) {
@@ -117,6 +130,25 @@ fun Navigation(
             NotificationScreen(
                 modifier = Modifier.fillMaxSize(),
                 snackbarHostState = snackbarHostState,
+                onNavigate = navHostController::navigate,
+                onNavigateUp = navHostController::navigateUp
+            )
+        }
+        composable(
+            route = Destination.Profile.route + "/{userId}",
+            arguments = listOf(
+                navArgument(name = "userId") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            ProfileScreen(
+                modifier = modifier.fillMaxSize(),
+                snackbarHostState = snackbarHostState,
+                onLogOut = {
+                    navHostController.navigate(Destination.Login.route)
+                    navHostController.graph.clear()
+                },
                 onNavigate = navHostController::navigate,
                 onNavigateUp = navHostController::navigateUp
             )

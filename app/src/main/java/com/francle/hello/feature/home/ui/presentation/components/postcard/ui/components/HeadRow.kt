@@ -1,6 +1,7 @@
 package com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -32,7 +33,8 @@ fun HeadRow(
     profileImageUrl: String?,
     username: String?,
     hashTag: String?,
-    onBottomSheetExpand: () -> Unit
+    onBottomSheetExpand: () -> Unit,
+    onProfileImageClick: () -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -59,6 +61,7 @@ fun HeadRow(
                 modifier = Modifier
                     .size(ProfilePictureSizeSmall)
                     .clip(CircleShape)
+                    .clickable { onProfileImageClick() }
             )
 
             Text(

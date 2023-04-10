@@ -58,4 +58,9 @@
     <string name="sign_up">Sign up</string>
     <string name="network_error_happens">Network error happens.</string>
     <string name="local_error_happens">Local error happens.</string>
+    <string name="log_out">Log out</string>
+    <string name="you_will_go_to_login_screen">You will go to login screen.</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="search">Search</string>
 </resources>

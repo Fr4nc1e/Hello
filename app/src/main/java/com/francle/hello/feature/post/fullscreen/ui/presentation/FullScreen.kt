@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.francle.hello.R
 import com.francle.hello.core.ui.event.UiEvent
+import com.francle.hello.core.ui.hub.presentation.navigation.destination.Destination
 import com.francle.hello.core.ui.util.asString
 import com.francle.hello.feature.post.fullscreen.ui.presentation.components.FullScreenBottomBar
 import com.francle.hello.feature.post.fullscreen.ui.presentation.components.FullScreenTopAppBar
@@ -97,6 +98,7 @@ fun FullScreen(
                         duration = SnackbarDuration.Short
                     )
                 }
+                else -> {}
             }
         }
     }
@@ -114,6 +116,9 @@ fun FullScreen(
                     username = post.username,
                     hashTag = post.hashTag,
                     profileImageUrl = post.profileImageUrl,
+                    onProfileImageClick = {
+                        onNavigate(Destination.Profile.route + "/${post.userId}")
+                    },
                     onNavigationIconClick = {
                         fullScreenViewModel.onEvent(FullScreenEvent.NavigateUp)
                     },
