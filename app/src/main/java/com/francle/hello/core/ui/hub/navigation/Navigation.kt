@@ -12,15 +12,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.francle.hello.core.ui.hub.navigation.destination.Destination
-import com.francle.hello.feature.post.createpost.ui.presentation.CreatePostScreen
-import com.francle.hello.feature.post.fullscreen.ui.presentation.FullScreen
+import com.francle.hello.feature.createpost.ui.presentation.CreatePostScreen
+import com.francle.hello.feature.fullscreen.ui.presentation.FullScreen
 import com.francle.hello.feature.home.ui.presentation.HomeScreen
-import com.francle.hello.feature.auth.login.ui.presentation.LoginScreen
+import com.francle.hello.feature.login.ui.presentation.LoginScreen
 import com.francle.hello.feature.notification.ui.presentation.NotificationScreen
 import com.francle.hello.feature.pair.ui.presentation.PairScreen
-import com.francle.hello.feature.post.postdetail.ui.presentaion.PostDetailScreen
-import com.francle.hello.feature.auth.register.ui.presentation.RegisterScreen
-import com.francle.hello.feature.auth.splash.ui.presentation.SplashScreen
+import com.francle.hello.feature.postdetail.ui.presentaion.PostDetailScreen
+import com.francle.hello.feature.register.ui.presentation.RegisterScreen
+import com.francle.hello.feature.splash.ui.presentation.SplashScreen
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
