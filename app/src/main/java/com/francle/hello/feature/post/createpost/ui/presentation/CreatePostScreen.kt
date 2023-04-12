@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +23,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.SettingsBackupRestore
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -34,6 +37,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,6 +46,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -58,6 +64,14 @@ import com.francle.hello.feature.post.createpost.ui.presentation.components.Crea
 import com.francle.hello.feature.post.createpost.ui.presentation.components.CreatePostTopAppBar
 import com.francle.hello.feature.post.createpost.ui.presentation.event.CreatePostEvent
 import com.francle.hello.feature.post.createpost.ui.viewmodel.CreatePostViewModel
+import com.mr0xf00.easycrop.ui.ImageCropperDialog
+import com.skydoves.balloon.ArrowPositionRules
+import com.skydoves.balloon.BalloonAnimation
+import com.skydoves.balloon.BalloonSizeSpec
+import com.skydoves.balloon.compose.Balloon
+import com.skydoves.balloon.compose.rememberBalloonBuilder
+import com.skydoves.balloon.compose.setBackgroundColor
+import com.skydoves.balloon.compose.setTextColor
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,6 +90,44 @@ fun CreatePostScreen(
 
     // Local Variables
     val context = LocalContext.current
+    val balloonBuilder = rememberBalloonBuilder {
+        setArrowSize(10)
+        setArrowPosition(0.5f)
+        setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+        setWidth(BalloonSizeSpec.WRAP)
+        setHeight(BalloonSizeSpec.WRAP)
+        setPadding(12)
+        setMarginHorizontal(12)
+        setCornerRadius(8f)
+        setTextColor(Color.Black) // set text color with compose color.
+        setBackgroundColor(Color.White)
+        setBalloonAnimation(BalloonAnimation.ELASTIC)
+    }
+    val cropperState = createPostViewModel.imageCropper.cropState
+    if (cropperState != null) {
+        ImageCropperDialog(
+            state = cropperState,
+            topBar = {
+                TopAppBar(
+                    title = {},
+                    navigationIcon = {
+                        IconButton(onClick = { it.done(accept = false) }) {
+                            Icon(Icons.Default.ArrowBack, null)
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { it.reset() }) {
+                            Icon(Icons.Filled.SettingsBackupRestore, null)
+                        }
+                        IconButton(onClick = { it.done(accept = true) }, enabled = !it.accepted) {
+                            Icon(Icons.Default.Done, null)
+                        }
+                    },
+                    colors = TopAppBarDefaults.smallTopAppBarColors()
+                )
+            }
+        )
+    }
 
     // Launch Effect
     LaunchedEffect(createPostViewModel, context) {
@@ -227,14 +279,33 @@ fun CreatePostScreen(
                     contentPadding = PaddingValues(SpaceSmall)
                 ) {
                     items(chosenMediaUriList) { uri ->
-                        Box(
-                            modifier = Modifier.size(150.dp).clip(RoundedCornerShape(16.dp)),
-                            contentAlignment = Alignment.Center
+                        Balloon(
+                            modifier = Modifier
+                                .size(150.dp)
+                                .clip(RoundedCornerShape(16.dp)),
+                            builder = balloonBuilder,
+                            balloonContent = {
+                                Box(
+                                    modifier = Modifier.clickable {
+                                        createPostViewModel.onEvent(
+                                            CreatePostEvent.CropImage(uri, context)
+                                        )
+                                    },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(text = "Crop the image.")
+                                }
+                            }
                         ) {
                             Image(
                                 painter = rememberAsyncImagePainter(model = uri),
                                 contentDescription = null,
-                                modifier = Modifier.aspectRatio(1f).fillMaxSize(),
+                                modifier = Modifier
+                                    .aspectRatio(1f)
+                                    .fillMaxSize()
+                                    .clickable {
+                                        it.showAlignTop()
+                                    },
                                 contentScale = ContentScale.Crop
                             )
                         }

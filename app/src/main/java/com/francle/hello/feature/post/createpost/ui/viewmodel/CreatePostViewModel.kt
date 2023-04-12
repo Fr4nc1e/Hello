@@ -2,16 +2,21 @@ package com.francle.hello.feature.post.createpost.ui.viewmodel
 
 import android.content.SharedPreferences
 import android.net.Uri
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francle.hello.R
 import com.francle.hello.core.data.call.Resource
+import com.francle.hello.core.data.file.toUri
 import com.francle.hello.core.ui.event.UiEvent
 import com.francle.hello.core.ui.util.TextState
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.core.util.Constants
 import com.francle.hello.feature.post.createpost.domain.repository.CreatePostRepository
 import com.francle.hello.feature.post.createpost.ui.presentation.event.CreatePostEvent
+import com.mr0xf00.easycrop.CropResult
+import com.mr0xf00.easycrop.ImageCropper
+import com.mr0xf00.easycrop.crop
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -41,6 +46,8 @@ class CreatePostViewModel @Inject constructor(
     private val _resultChannel = Channel<UiEvent>()
     val resultChannel = _resultChannel.receiveAsFlow()
 
+    val imageCropper = ImageCropper()
+
     init {
         _profileImageUrl.update {
             sharedPreferences.getString(Constants.PROFILE_IMAGE_URL, null) ?: ""
@@ -54,7 +61,6 @@ class CreatePostViewModel @Inject constructor(
                     it.copy(text = event.text)
                 }
             }
-
             CreatePostEvent.CreatePost -> {
                 viewModelScope.launch {
                     if (
@@ -94,6 +100,29 @@ class CreatePostViewModel @Inject constructor(
             is CreatePostEvent.InputMediaContent -> {
                 _chosenContentUriList.update {
                     event.uriList
+                }
+            }
+            is CreatePostEvent.CropImage -> {
+                viewModelScope.launch {
+                    imageCropper.crop(event.uri, event.context).also { cropResult ->
+                        when (cropResult) {
+                            is CropResult.Success -> {
+                                val newUri = cropResult.bitmap.asAndroidBitmap().toUri(
+                                    event.context
+                                )
+                                _chosenContentUriList.update {
+                                    it?.mapNotNull { uri ->
+                                        if (uri == event.uri) {
+                                            newUri
+                                        } else {
+                                            uri
+                                        }
+                                    }
+                                }
+                            }
+                            else -> {}
+                        }
+                    }
                 }
             }
         }
