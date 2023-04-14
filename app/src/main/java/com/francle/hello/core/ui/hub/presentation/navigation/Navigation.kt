@@ -15,12 +15,15 @@ import com.francle.hello.core.ui.hub.presentation.navigation.destination.Destina
 import com.francle.hello.feature.auth.login.ui.presentation.LoginScreen
 import com.francle.hello.feature.auth.register.ui.presentation.RegisterScreen
 import com.francle.hello.feature.auth.splash.ui.presentation.SplashScreen
+import com.francle.hello.feature.communication.ui.presentation.chat.ChatScreen
+import com.francle.hello.feature.communication.ui.presentation.message.MessageScreen
 import com.francle.hello.feature.home.ui.presentation.HomeScreen
 import com.francle.hello.feature.notification.ui.presentation.NotificationScreen
 import com.francle.hello.feature.pair.ui.presentation.PairScreen
 import com.francle.hello.feature.post.createpost.ui.presentation.CreatePostScreen
 import com.francle.hello.feature.post.fullscreen.ui.presentation.FullScreen
 import com.francle.hello.feature.post.postdetail.ui.presentaion.PostDetailScreen
+import com.francle.hello.feature.profile.ui.presentation.EditProfileScreen
 import com.francle.hello.feature.profile.ui.presentation.ProfileScreen
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -149,6 +152,34 @@ fun Navigation(
                     navHostController.navigate(Destination.Login.route)
                     navHostController.graph.clear()
                 },
+                onNavigate = navHostController::navigate,
+                onNavigateUp = navHostController::navigateUp
+            )
+        }
+        composable(Destination.EditProfile.route) {
+            EditProfileScreen(
+                modifier = Modifier.fillMaxSize(),
+                snackbarHostState = snackbarHostState,
+                onNavigateUp = navHostController::navigateUp
+            )
+        }
+        composable(Destination.Chat.route) {
+            ChatScreen(
+                modifier = modifier.fillMaxSize(),
+                snackbarHostState = snackbarHostState,
+                onNavigate = navHostController::navigate
+            )
+        }
+        composable(
+            route = Destination.Message.route + "/channelId",
+            arguments = listOf(
+                navArgument(name = "channelId") {
+                    type = NavType.StringArrayType
+                }
+            )
+        ) {
+            MessageScreen(
+                snackbarHostState = snackbarHostState,
                 onNavigate = navHostController::navigate,
                 onNavigateUp = navHostController::navigateUp
             )

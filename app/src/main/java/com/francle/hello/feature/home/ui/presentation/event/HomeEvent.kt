@@ -9,6 +9,8 @@ sealed class HomeEvent {
 
     object DeletePost : HomeEvent()
 
+    object UpdateProfileUrl : HomeEvent()
+
     data class ClickMoreVert(val post: Post) : HomeEvent()
 
     data class IsOwnPost(val postUserId: String) : HomeEvent()

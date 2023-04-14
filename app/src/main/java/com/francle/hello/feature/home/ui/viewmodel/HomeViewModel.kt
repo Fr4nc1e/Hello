@@ -13,22 +13,25 @@ import com.francle.hello.feature.home.domain.models.Post
 import com.francle.hello.feature.home.domain.repository.PostRepository
 import com.francle.hello.feature.home.ui.presentation.event.HomeEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val postRepository: PostRepository,
-    sharedPref: SharedPreferences,
+    private val sharedPref: SharedPreferences,
     val retriever: MediaMetadataRetriever
 ) : ViewModel() {
     private val _userId = MutableStateFlow("")
     val userId = _userId.asStateFlow()
+
+    private val _profileImageUrl = MutableStateFlow("")
+    val profileImageUrl = _profileImageUrl.asStateFlow()
 
     private val _posts = MutableStateFlow(emptyList<Post?>())
     val posts = _posts.asStateFlow()
@@ -59,8 +62,7 @@ class HomeViewModel @Inject constructor(
             _isLoading.update { loadingState }
         },
         onRequest = { nextPage ->
-            postRepository.getPosts(
-                userId = sharedPref.getString(Constants.KEY_USER_ID, "") ?: "",
+            postRepository.getHomePosts(
                 page = nextPage,
                 pageSize = Constants.PAGE_SIZE
             )
@@ -94,8 +96,13 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadNextItems()
-        sharedPref.getString(Constants.KEY_USER_ID, "")?.let { userId ->
-            _userId.update { userId }
+        sharedPref.apply {
+            getString(Constants.KEY_USER_ID, "")?.let { userId ->
+                _userId.update { userId }
+            }
+            getString(Constants.KEY_PROFILE_IMAGE_URL, "")?.let { profileImageUrl ->
+                _profileImageUrl.update { profileImageUrl }
+            }
         }
     }
 
@@ -141,6 +148,16 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             }
+
+            HomeEvent.UpdateProfileUrl -> {
+                updateProfileImageUrl()
+            }
+        }
+    }
+
+    private fun updateProfileImageUrl() {
+        sharedPref.getString(Constants.KEY_PROFILE_IMAGE_URL, "")?.let { profileImageUrl ->
+            _profileImageUrl.update { profileImageUrl }
         }
     }
 

@@ -123,7 +123,12 @@ fun CreatePostScreen(
                             Icon(Icons.Default.Done, null)
                         }
                     },
-                    colors = TopAppBarDefaults.smallTopAppBarColors()
+                    colors = TopAppBarDefaults.smallTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    )
                 )
             }
         )
@@ -158,7 +163,7 @@ fun CreatePostScreen(
         }
     )
 
-    // CameraLauncher
+    // Camera Launcher
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview(),
         onResult = { bitmap ->
@@ -193,7 +198,10 @@ fun CreatePostScreen(
                 actions = {
                     when (loading) {
                         true -> {
-                            CircularProgressIndicator(modifier = Modifier.animateContentSize())
+                            CircularProgressIndicator(
+                                modifier = Modifier.animateContentSize(),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
                         false -> {
                             IconButton(
@@ -293,7 +301,7 @@ fun CreatePostScreen(
                                     },
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(text = "Crop the image.")
+                                    Text(text = "Modify the image.")
                                 }
                             }
                         ) {

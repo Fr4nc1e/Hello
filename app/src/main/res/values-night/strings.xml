@@ -63,4 +63,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="search">Search</string>
+    <string name="connected">Connected</string>
+    <string name="edit_profile_successfully">Edit profile successfully.</string>
+    <string name="edit_your_profile">Edit your profile</string>
 </resources>

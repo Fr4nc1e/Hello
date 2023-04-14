@@ -3,6 +3,7 @@ package com.francle.hello.feature.profile.ui.presentation.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -11,7 +12,9 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,7 +31,8 @@ fun ProfileTopAppBar(
     onNavigationIconClick: () -> Unit,
     onClickMoreVert: () -> Unit,
     onClickLogOut: () -> Unit,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
+    onMessageClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -44,6 +48,14 @@ fun ProfileTopAppBar(
             }
         },
         actions = {
+            if (!isOwnProfile) {
+                IconButton(onClick = { onMessageClick() }) {
+                    Icon(
+                        imageVector = Icons.Filled.Message,
+                        contentDescription = null
+                    )
+                }
+            }
             IconButton(onClick = { onClickMoreVert() }) {
                 Icon(
                     imageVector = Icons.Filled.MoreVert,
@@ -67,7 +79,7 @@ fun ProfileTopAppBar(
                     )
 
                     DropdownMenuItem(
-                        text = { Text(text = "Modify profile") },
+                        text = { Text(text = "Edit profile") },
                         leadingIcon = {
                             Icon(imageVector = Icons.Filled.ModeEdit, contentDescription = null)
                         },
@@ -76,6 +88,12 @@ fun ProfileTopAppBar(
                 }
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+        )
     )
 }

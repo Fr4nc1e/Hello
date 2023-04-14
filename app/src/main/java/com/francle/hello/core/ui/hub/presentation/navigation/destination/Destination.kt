@@ -10,7 +10,9 @@ sealed class Destination(val route: String) {
     object CreatePost : Destination("create_post")
     object Pair : Destination("pair")
     object Chat : Destination("chat")
+    object Message : Destination("message")
     object Profile : Destination("profile")
+    object EditProfile : Destination("edit_profile")
     object Notification : Destination("notification")
     object Search : Destination("search")
 }

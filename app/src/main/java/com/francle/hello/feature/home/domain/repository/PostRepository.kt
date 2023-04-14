@@ -13,6 +13,11 @@ interface PostRepository {
         pageSize: Int
     ): Flow<Resource<List<Post?>?>>
 
+    fun getHomePosts(
+        page: Int,
+        pageSize: Int
+    ): Flow<Resource<List<Post?>?>>
+
     suspend fun deletePostByPostId(postId: String): Resource<Unit>
 
     suspend fun deletePostsByUserId(userId: String): Resource<Unit>

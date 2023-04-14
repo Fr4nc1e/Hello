@@ -50,7 +50,7 @@ class CreatePostViewModel @Inject constructor(
 
     init {
         _profileImageUrl.update {
-            sharedPreferences.getString(Constants.PROFILE_IMAGE_URL, null) ?: ""
+            sharedPreferences.getString(Constants.KEY_PROFILE_IMAGE_URL, null) ?: ""
         }
     }
 

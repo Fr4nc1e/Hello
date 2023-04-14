@@ -57,7 +57,12 @@ fun PostCard(
     }
 
     LaunchedEffect(lifecycle) {
-        postCardViewModel.onEvent(PostCardEvent.CheckLikeState)
+        when (lifecycle) {
+            Lifecycle.Event.ON_START -> {
+                postCardViewModel.onEvent(PostCardEvent.CheckLikeState)
+            }
+            else -> {}
+        }
     }
 
     Card(modifier = modifier) {

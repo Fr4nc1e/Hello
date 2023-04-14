@@ -32,16 +32,24 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dokar.sheets.BottomSheetLayout
 import com.dokar.sheets.rememberBottomSheetState
@@ -71,6 +79,7 @@ fun HomeScreen(
 ) {
     // ViewModel Variables
     val userId = homeViewModel.userId.collectAsStateWithLifecycle().value
+    val profileImageUrl = homeViewModel.profileImageUrl.collectAsStateWithLifecycle().value
     val posts = homeViewModel.posts.collectAsStateWithLifecycle().value
     val loading = homeViewModel.isLoading.collectAsStateWithLifecycle().value
     val isRefreshing = homeViewModel.isRefreshing.collectAsStateWithLifecycle().value
@@ -87,6 +96,29 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var lifecycle by remember { mutableStateOf(Lifecycle.Event.ON_CREATE) }
+
+    // Launch Effect
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            lifecycle = event
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    LaunchedEffect(lifecycle) {
+        when (lifecycle) {
+            Lifecycle.Event.ON_START -> {
+                homeViewModel.onEvent(HomeEvent.UpdateProfileUrl)
+            }
+            else -> {}
+        }
+    }
 
     // LaunchEffect
     LaunchedEffect(homeViewModel.responseChannel, context) {
@@ -111,6 +143,7 @@ fun HomeScreen(
         ) {
             // Top App Bar
             HomeTopAppBar(
+                profileImageUrl = profileImageUrl,
                 onProfileImageClick = { onNavigate(Destination.Profile.route + "/$userId") },
                 onNotificationClick = { onNavigate(Destination.Notification.route) },
                 scrollBehavior = scrollBehavior

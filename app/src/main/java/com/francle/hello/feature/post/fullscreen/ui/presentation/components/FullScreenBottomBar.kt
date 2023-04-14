@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,11 +23,7 @@ fun FullScreenBottomBar(
     onLikeClick: () -> Unit,
     onShareClick: () -> Unit
 ) {
-    BottomAppBar(
-        modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.inverseSurface,
-        contentColor = MaterialTheme.colorScheme.inverseOnSurface
-    ) {
+    BottomAppBar(modifier = modifier) {
         IconButton(onClick = { onCommentClick() }) {
             Icon(
                 imageVector = Icons.Filled.ChatBubbleOutline,
@@ -54,7 +49,7 @@ fun FullScreenBottomBar(
                         Color.Red
                     }
                     false -> {
-                        MaterialTheme.colorScheme.inverseOnSurface
+                        Color.Unspecified
                     }
                 }
             )

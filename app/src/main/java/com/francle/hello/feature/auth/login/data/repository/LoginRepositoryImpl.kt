@@ -1,11 +1,11 @@
 package com.francle.hello.feature.auth.login.data.repository
 
 import android.content.SharedPreferences
-import com.francle.hello.feature.auth.splash.data.response.AuthResult
 import com.francle.hello.core.util.Constants
 import com.francle.hello.feature.auth.login.data.api.LoginApi
 import com.francle.hello.feature.auth.login.data.request.LoginRequest
 import com.francle.hello.feature.auth.login.domain.repository.LoginRepository
+import com.francle.hello.feature.auth.splash.data.response.AuthResult
 import com.onesignal.OneSignal
 import retrofit2.HttpException
 
@@ -27,6 +27,8 @@ class LoginRepositoryImpl(
             pref.edit()
                 .putString(Constants.KEY_JWT_TOKEN, response.token)
                 .putString(Constants.KEY_USER_ID, response.userId)
+                .putString(Constants.KEY_STREAM_TOKEN, response.streamToken)
+                .putString(Constants.KEY_USER_NAME, response.username)
                 .apply()
             OneSignal.setExternalUserId(response.userId)
             AuthResult.Authorized()

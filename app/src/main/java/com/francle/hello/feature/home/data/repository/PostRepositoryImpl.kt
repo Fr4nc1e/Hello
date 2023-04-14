@@ -87,6 +87,43 @@ class PostRepositoryImpl(
         }
     }
 
+    override fun getHomePosts(page: Int, pageSize: Int): Flow<Resource<List<Post?>?>> {
+        return flow {
+            try {
+                val response = api.getHomePosts(
+                    page = page,
+                    pageSize = pageSize
+                )
+                    ?.posts
+                    ?.map { it?.toPost() }
+                emit(Resource.Success(response))
+            } catch (e: HttpException) {
+                if (e.code() == 404) {
+                    emit(
+                        Resource.Error(
+                            data = null,
+                            message = UiText.StringResource(R.string.post_not_found)
+                        )
+                    )
+                } else {
+                    emit(
+                        Resource.Error(
+                            data = null,
+                            message = UiText.StringResource(R.string.something_went_wrong)
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                emit(
+                    Resource.Error(
+                        data = null,
+                        message = UiText.StringResource(R.string.something_went_wrong)
+                    )
+                )
+            }
+        }
+    }
+
     override suspend fun deletePostByPostId(postId: String): Resource<Unit> {
         return try {
             api.deletePostByPostId(postId)

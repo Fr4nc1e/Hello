@@ -19,6 +19,12 @@ interface PostApi {
         @Query("pageSize") pageSize: Int
     ): GetPostByUserIdResponse?
 
+    @GET("/api/posts/home")
+    suspend fun getHomePosts(
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int
+    ): GetPostByUserIdResponse?
+
     @DELETE("/api/post/delete")
     suspend fun deletePostByPostId(
         @Query("postId") postId: String

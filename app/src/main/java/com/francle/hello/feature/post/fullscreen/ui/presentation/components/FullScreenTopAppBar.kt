@@ -85,10 +85,11 @@ fun FullScreenTopAppBar(
             actions()
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.inverseSurface,
-            titleContentColor = MaterialTheme.colorScheme.inverseOnSurface,
-            navigationIconContentColor = MaterialTheme.colorScheme.inverseOnSurface,
-            actionIconContentColor = MaterialTheme.colorScheme.inverseOnSurface
+            containerColor = MaterialTheme.colorScheme.primary,
+            scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
         )
     )
 }
