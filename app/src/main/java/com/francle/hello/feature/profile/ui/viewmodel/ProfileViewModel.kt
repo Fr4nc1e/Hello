@@ -13,6 +13,7 @@ import com.francle.hello.core.util.Constants
 import com.francle.hello.feature.profile.domain.model.User
 import com.francle.hello.feature.profile.domain.repository.ProfileRepository
 import com.francle.hello.feature.profile.ui.event.ProfileEvent
+import com.francle.hello.feature.profile.ui.presentation.ProfileTabContent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.getstream.chat.android.client.ChatClient
 import java.util.UUID
@@ -45,6 +46,9 @@ class ProfileViewModel @Inject constructor(
 
     private val _isOwnProfile = MutableStateFlow(false)
     val isOwnProfile = _isOwnProfile.asStateFlow()
+
+    private val _tabIndex = MutableStateFlow(ProfileTabContent.Posts.ordinal)
+    val tabIndex = _tabIndex.asStateFlow()
 
     private val _resultChannel = Channel<UiEvent>()
     val resultChannel = _resultChannel.receiveAsFlow()
@@ -116,6 +120,10 @@ class ProfileViewModel @Inject constructor(
                 viewModelScope.launch {
                     _resultChannel.send(UiEvent.Navigate(Destination.EditProfile.route))
                 }
+            }
+
+            is ProfileEvent.SwitchTab -> {
+                _tabIndex.update { event.index }
             }
         }
     }

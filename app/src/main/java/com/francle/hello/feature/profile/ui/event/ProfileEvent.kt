@@ -5,5 +5,6 @@ sealed class ProfileEvent {
     object ClickMoreVert : ProfileEvent()
     object ClickLogOut : ProfileEvent()
     object ClickEdit : ProfileEvent()
+    data class SwitchTab(val index: Int) : ProfileEvent()
     object LogOut : ProfileEvent()
 }
