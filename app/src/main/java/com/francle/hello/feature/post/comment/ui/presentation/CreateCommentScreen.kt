@@ -1,4 +1,4 @@
-package com.francle.hello.feature.post.createpost.ui.presentation
+package com.francle.hello.feature.post.comment.ui.presentation
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -26,6 +26,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.SettingsBackupRestore
+import androidx.compose.material.icons.outlined.Cancel
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -60,10 +62,9 @@ import com.francle.hello.core.ui.event.UiEvent
 import com.francle.hello.core.ui.theme.ProfilePictureSizeSmall
 import com.francle.hello.core.ui.theme.SpaceSmall
 import com.francle.hello.core.ui.util.asString
+import com.francle.hello.feature.post.comment.ui.event.CommentEvent
+import com.francle.hello.feature.post.comment.ui.viewmodel.CreateCommentViewModel
 import com.francle.hello.feature.post.createpost.ui.presentation.components.CreatePostBottomBar
-import com.francle.hello.feature.post.createpost.ui.presentation.components.CreatePostTopAppBar
-import com.francle.hello.feature.post.createpost.ui.presentation.event.CreatePostEvent
-import com.francle.hello.feature.post.createpost.ui.viewmodel.CreatePostViewModel
 import com.mr0xf00.easycrop.ui.ImageCropperDialog
 import com.skydoves.balloon.ArrowPositionRules
 import com.skydoves.balloon.BalloonAnimation
@@ -76,18 +77,19 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreatePostScreen(
+fun CreateCommentScreen(
     modifier: Modifier,
     snackbarHostState: SnackbarHostState,
     onNavigateUp: () -> Unit,
-    createPostViewModel: CreatePostViewModel = hiltViewModel()
+    createCommentViewModel: CreateCommentViewModel = hiltViewModel()
 ) {
     // ViewModel Variables
-    val profileImageUrl = createPostViewModel.profileImageUrl.collectAsStateWithLifecycle().value
-    val chosenMediaUriList = createPostViewModel
+    val profileImageUrl = createCommentViewModel.profileImageUrl.collectAsStateWithLifecycle().value
+    val chosenMediaUriList = createCommentViewModel
         .chosenContentUriList.collectAsStateWithLifecycle().value
-    val postText = createPostViewModel.postText.collectAsStateWithLifecycle().value
-    val loading = createPostViewModel.isLoading.collectAsStateWithLifecycle().value
+    val commentText = createCommentViewModel.inputComment.collectAsStateWithLifecycle().value
+    val commentType = createCommentViewModel.commentType.collectAsStateWithLifecycle().value
+    val loading = createCommentViewModel.isLoading.collectAsStateWithLifecycle().value
 
     // Local Variables
     val context = LocalContext.current
@@ -104,7 +106,7 @@ fun CreatePostScreen(
         setBackgroundColor(Color.White)
         setBalloonAnimation(BalloonAnimation.ELASTIC)
     }
-    val cropperState = createPostViewModel.imageCropper.cropState
+    val cropperState = createCommentViewModel.imageCropper.cropState
     if (cropperState != null) {
         ImageCropperDialog(
             state = cropperState,
@@ -136,8 +138,8 @@ fun CreatePostScreen(
     }
 
     // Launch Effect
-    LaunchedEffect(createPostViewModel, context) {
-        createPostViewModel.resultChannel.collect { uiEvent ->
+    LaunchedEffect(createCommentViewModel, context) {
+        createCommentViewModel.responseChannel.collect { uiEvent ->
             when (uiEvent) {
                 is UiEvent.Message -> {
                     snackbarHostState.showSnackbar(
@@ -158,8 +160,8 @@ fun CreatePostScreen(
     val mediaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(9),
         onResult = { uriList ->
-            createPostViewModel.onEvent(
-                CreatePostEvent.InputMediaContent(uriList)
+            createCommentViewModel.onEvent(
+                CommentEvent.InputMediaContent(uriList)
             )
         }
     )
@@ -169,8 +171,8 @@ fun CreatePostScreen(
         contract = ActivityResultContracts.TakePicturePreview(),
         onResult = { bitmap ->
             bitmap?.toUri(context)?.let {
-                createPostViewModel.onEvent(
-                    CreatePostEvent.InputMediaContent(listOf(it))
+                createCommentViewModel.onEvent(
+                    CommentEvent.InputMediaContent(listOf(it))
                 )
             }
         }
@@ -193,9 +195,17 @@ fun CreatePostScreen(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            CreatePostTopAppBar(
+            CenterAlignedTopAppBar(
+                title = { Text(text = stringResource(id = R.string.create_comment)) },
                 modifier = Modifier.fillMaxWidth(),
-                onNavigationIconClick = { onNavigateUp() },
+                navigationIcon = {
+                    IconButton(onClick = { onNavigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Cancel,
+                            contentDescription = stringResource(R.string.back)
+                        )
+                    }
+                },
                 actions = {
                     when (loading) {
                         true -> {
@@ -207,7 +217,11 @@ fun CreatePostScreen(
                         false -> {
                             IconButton(
                                 onClick = {
-                                    createPostViewModel.onEvent(CreatePostEvent.CreatePost)
+                                    commentType?.also {
+                                        createCommentViewModel.onEvent(
+                                            CommentEvent.CreateComment(it)
+                                        )
+                                    }
                                 },
                                 modifier = Modifier.animateContentSize()
                             ) {
@@ -218,7 +232,14 @@ fun CreatePostScreen(
                             }
                         }
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         },
         bottomBar = {
@@ -264,9 +285,9 @@ fun CreatePostScreen(
                 )
 
                 TextField(
-                    value = postText.text,
+                    value = commentText.text,
                     onValueChange = { text ->
-                        createPostViewModel.onEvent(CreatePostEvent.InputPostText(text))
+                        createCommentViewModel.onEvent(CommentEvent.InputComment(text))
                     },
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = {
@@ -296,8 +317,8 @@ fun CreatePostScreen(
                             balloonContent = {
                                 Box(
                                     modifier = Modifier.clickable {
-                                        createPostViewModel.onEvent(
-                                            CreatePostEvent.CropImage(uri, context)
+                                        createCommentViewModel.onEvent(
+                                            CommentEvent.CropImage(uri, context)
                                         )
                                     },
                                     contentAlignment = Alignment.Center

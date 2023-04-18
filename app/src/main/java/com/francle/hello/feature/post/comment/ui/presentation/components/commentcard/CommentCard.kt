@@ -1,8 +1,11 @@
-package com.francle.hello.feature.home.ui.presentation.components.postcard.ui
+package com.francle.hello.feature.post.comment.ui.presentation.components.commentcard
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -10,26 +13,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.francle.hello.core.ui.theme.SpaceMedium
 import com.francle.hello.core.ui.theme.SpaceSmall
-import com.francle.hello.feature.home.domain.models.Post
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.BottomRow
-import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.ExpandableText
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.HeadRow
-import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.PostMediaContent
-import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.event.PostCardEvent
-import com.francle.hello.feature.home.ui.presentation.components.postcard.viewmodel.unifiedPostCardViewModel
+import com.francle.hello.feature.post.comment.domain.models.Comment
+import com.francle.hello.feature.post.comment.ui.event.CommentCardEvent
+import com.francle.hello.feature.post.comment.ui.presentation.components.commentcard.components.CommentMediaContent
+import com.francle.hello.feature.post.comment.ui.presentation.components.commentcard.viewmodel.unifiedCommentCardViewModel
 
 @Composable
-fun PostCard(
+fun CommentCard(
     modifier: Modifier,
-    post: Post,
+    comment: Comment,
     onBottomSheetExpand: () -> Unit,
     onMediaItemClick: (Int) -> Unit,
     onCommentClick: () -> Unit,
@@ -37,10 +38,8 @@ fun PostCard(
     onShareClick: () -> Unit,
     onProfileImageClick: () -> Unit
 ) {
-    // ViewModel
-    val postCardViewModel = unifiedPostCardViewModel(postId = post.id)
-    val likeState = postCardViewModel.likeState.collectAsStateWithLifecycle().value
-
+    val commentCardViewModel = unifiedCommentCardViewModel(commentId = comment.commentId)
+    val likeState = commentCardViewModel.likeState.collectAsStateWithLifecycle().value
     val lifecycleOwner = LocalLifecycleOwner.current
     var lifecycle by remember { mutableStateOf(Lifecycle.Event.ON_CREATE) }
 
@@ -56,34 +55,39 @@ fun PostCard(
         }
     }
 
-    LaunchedEffect(lifecycle == Lifecycle.Event.ON_START) {
-        postCardViewModel.onEvent(PostCardEvent.CheckLikeState)
+    LaunchedEffect(lifecycle) {
+        commentCardViewModel.onEvent(CommentCardEvent.CheckLikeState)
     }
 
-    Card(modifier = modifier) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(SpaceSmall)
+    ) {
         HeadRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(SpaceSmall),
-            profileImageUrl = post.profileImageUrl,
-            username = post.username,
-            hashTag = post.hashTag,
-            onBottomSheetExpand = onBottomSheetExpand,
-            onProfileImageClick = onProfileImageClick
+            modifier = Modifier.fillMaxWidth(),
+            profileImageUrl = comment.profileImageUrl,
+            username = comment.arrowBackUsername,
+            hashTag = comment.hashTag,
+            onBottomSheetExpand = {
+                onBottomSheetExpand()
+            },
+            onProfileImageClick = {
+                onProfileImageClick()
+            }
         )
 
-        post.postText?.let {
-            ExpandableText(
-                text = it,
-                modifier = Modifier.padding(start = SpaceMedium)
+        comment.commentText?.let { text ->
+            Text(
+                text = text,
+                modifier = Modifier.padding(horizontal = SpaceSmall)
             )
         }
-
-        PostMediaContent(
+        
+        CommentMediaContent(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(CenterHorizontally),
-            postContentPairs = post.postContentPairs,
+                .align(Alignment.CenterHorizontally),
+            mediaUrls = comment.commentMediaUrls,
             onMediaItemClick = onMediaItemClick
         )
 
@@ -93,9 +97,13 @@ fun PostCard(
             onCommentClick = { onCommentClick() },
             onRepostClick = { onRepostClick() },
             onLikeClick = {
-                postCardViewModel.onEvent(PostCardEvent.ClickLikeButton(postUserId = post.userId))
+                commentCardViewModel.onEvent(
+                    CommentCardEvent.ClickLikeButton(commentUserId = comment.arrowBackUserId)
+                )
             },
             onShareClick = { onShareClick() }
         )
+        
+        Divider()
     }
 }

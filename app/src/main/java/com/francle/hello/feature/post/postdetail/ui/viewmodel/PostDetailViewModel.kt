@@ -6,15 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francle.hello.R
 import com.francle.hello.core.data.call.Resource
+import com.francle.hello.core.data.page.PagingManager
 import com.francle.hello.core.ui.event.UiEvent
-import com.francle.hello.core.ui.util.TextState
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.core.util.Constants
-import com.francle.hello.feature.post.like.util.ForwardEntityType
 import com.francle.hello.feature.home.domain.models.Post
 import com.francle.hello.feature.home.domain.repository.PostRepository
+import com.francle.hello.feature.post.comment.domain.models.Comment
+import com.francle.hello.feature.post.comment.domain.repository.CommentRepository
 import com.francle.hello.feature.post.like.data.request.LikeRequest
 import com.francle.hello.feature.post.like.domain.repository.LikeRepository
+import com.francle.hello.feature.post.like.util.ForwardEntityType
 import com.francle.hello.feature.post.postdetail.ui.event.DetailEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -30,6 +32,7 @@ import kotlinx.coroutines.launch
 class PostDetailViewModel @Inject constructor(
     private val postRepository: PostRepository,
     private val likeRepository: LikeRepository,
+    private val commentRepository: CommentRepository,
     savedStateHandle: SavedStateHandle,
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
@@ -38,18 +41,71 @@ class PostDetailViewModel @Inject constructor(
 
     private val _post = MutableStateFlow<Post?>(null)
     val post = _post.asStateFlow()
+    
+    private val _comments = MutableStateFlow(emptyList<Comment?>())
+    val comments = _comments.asStateFlow()
 
     private val _likeState = MutableStateFlow(false)
     val likeState = _likeState.asStateFlow()
 
-    private val _inputComment = MutableStateFlow(TextState())
-    val inputComment = _inputComment.asStateFlow()
-
     private val _isOwnPost = MutableStateFlow(false)
     val isOwnPost = _isOwnPost.asStateFlow()
 
+    private val _isOwnComment = MutableStateFlow(false)
+    val isOwnComment = _isOwnComment.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    private val _isEndReach = MutableStateFlow(false)
+    val isEndReach = _isEndReach.asStateFlow()
+
     private val _responseChannel = Channel<UiEvent>()
     val responseChannel = _responseChannel.receiveAsFlow()
+
+    private val _page = MutableStateFlow(0)
+
+    private val pagingManager = PagingManager(
+        initialPage = 0,
+        onLoadUpdated = { loadingState ->
+            _isLoading.update { loadingState }
+        },
+        onRequest = { nextPage ->
+            commentRepository.getCommentsOfEntity(
+                entityId = _post.value?.id ?: "",
+                page = nextPage,
+                pageSize = Constants.PAGE_SIZE
+            )
+        },
+        onSuccess = { items ->
+            items.collect { result ->
+                when (result) {
+                    is Resource.Error -> {
+                        _responseChannel
+                            .send(
+                                UiEvent.Message(
+                                    result.message ?: UiText.StringResource(
+                                        R.string.an_unexpected_error_occurred
+                                    )
+                                )
+                            )
+                    }
+                    is Resource.Success -> {
+                        result.data?.let { comments ->
+                            if (comments.isEmpty()) {
+                                _isEndReach.update { true }
+                                return@collect
+                            } else { _isEndReach.update { false } }
+                            _comments.update { 
+                                it + comments 
+                            }
+                            _page.update { it + 1 }
+                        }
+                    }
+                }
+            }
+        }
+    )
 
     init {
         savedStateHandle.get<String>("postId")?.let {
@@ -68,6 +124,7 @@ class PostDetailViewModel @Inject constructor(
                         is Resource.Success -> {
                             _post.update { result.data }
                             checkLikeState()
+                            loadNextItems()
                         }
                     }
                 }
@@ -77,13 +134,8 @@ class PostDetailViewModel @Inject constructor(
 
     fun onEvent(event: DetailEvent) {
         when (event) {
-            is DetailEvent.InputComment -> {
-                _inputComment.update {
-                    it.copy(text = event.text)
-                }
-            }
             is DetailEvent.IsOwnPost -> {
-                _isOwnPost.update { onOwnPostJudge(event.postUserId) }
+                _isOwnPost.update { onOwnEntityJudge(event.postUserId) }
             }
             DetailEvent.DeletePost -> {
                 viewModelScope.launch {
@@ -110,10 +162,10 @@ class PostDetailViewModel @Inject constructor(
             is DetailEvent.ClickLikeButton -> {
                 when (_likeState.value) {
                     false -> {
-                        like(event.type)
+                        like(event.type.ordinal)
                     }
                     true -> {
-                        dislike(event.type)
+                        dislike(event.type.ordinal)
                     }
                 }
             }
@@ -121,11 +173,34 @@ class PostDetailViewModel @Inject constructor(
             DetailEvent.CheckLikeState -> {
                 checkLikeState()
             }
+
+            is DetailEvent.IsOwnComment -> {
+                _isOwnComment.update {
+                    onOwnEntityJudge(event.commentUserId)
+                }
+            }
+
+            DetailEvent.LoadItems -> {
+                loadNextItems()
+            }
+
+            is DetailEvent.Navigate -> {
+                viewModelScope.launch {
+                    _responseChannel.send(UiEvent.Navigate(event.route))
+                }
+            }
         }
     }
 
-    private fun onOwnPostJudge(postUserId: String): Boolean {
-        return userId == postUserId
+    private fun loadNextItems() {
+        viewModelScope.launch {
+            pagingManager.currentPage = _page.value
+            pagingManager.loadNextItems()
+        }
+    }
+
+    private fun onOwnEntityJudge(entityUserId: String): Boolean {
+        return userId == entityUserId
     }
 
     private fun dislike(type: Int) {

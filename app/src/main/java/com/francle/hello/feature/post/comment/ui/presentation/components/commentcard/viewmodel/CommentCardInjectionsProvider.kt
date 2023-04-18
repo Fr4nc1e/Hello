@@ -1,4 +1,4 @@
-package com.francle.hello.feature.home.ui.presentation.components.postcard.viewmodel
+package com.francle.hello.feature.post.comment.ui.presentation.components.commentcard.viewmodel
 
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class InjectionsProvider @Inject constructor(
+class CommentCardInjectionsProvider @Inject constructor(
     val likeRepository: LikeRepository,
     val sharedPreferences: SharedPreferences
 ) : ViewModel()

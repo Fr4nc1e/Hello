@@ -3,6 +3,7 @@ package com.francle.hello.core.ui.hub.presentation.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,6 +21,7 @@ import com.francle.hello.feature.communication.ui.presentation.message.MessageSc
 import com.francle.hello.feature.home.ui.presentation.HomeScreen
 import com.francle.hello.feature.notification.ui.presentation.NotificationScreen
 import com.francle.hello.feature.pair.ui.presentation.PairScreen
+import com.francle.hello.feature.post.comment.ui.presentation.CreateCommentScreen
 import com.francle.hello.feature.post.createpost.ui.presentation.CreatePostScreen
 import com.francle.hello.feature.post.fullscreen.ui.presentation.FullScreen
 import com.francle.hello.feature.post.postdetail.ui.presentaion.PostDetailScreen
@@ -31,7 +33,8 @@ import com.francle.hello.feature.profile.ui.presentation.ProfileScreen
 fun Navigation(
     modifier: Modifier,
     navHostController: NavHostController,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    lazyListState: LazyListState
 ) {
     NavHost(
         navController = navHostController,
@@ -76,6 +79,7 @@ fun Navigation(
             HomeScreen(
                 modifier = modifier.fillMaxSize(),
                 snackbarHostState = snackbarHostState,
+                lazyListState = lazyListState,
                 onNavigate = navHostController::navigate
             )
         }
@@ -181,6 +185,26 @@ fun Navigation(
             MessageScreen(
                 snackbarHostState = snackbarHostState,
                 onNavigate = navHostController::navigate,
+                onNavigateUp = navHostController::navigateUp
+            )
+        }
+        composable(
+            route = Destination.CreateComment.route + "/{entityId}" + "/{ownerUserId}" + "/{type}",
+            arguments = listOf(
+                navArgument(name = "entityId") {
+                    type = NavType.StringType
+                },
+                navArgument(name = "ownerUserId") {
+                    type = NavType.StringType
+                },
+                navArgument(name = "type") {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            CreateCommentScreen(
+                modifier = Modifier.fillMaxSize(),
+                snackbarHostState = snackbarHostState,
                 onNavigateUp = navHostController::navigateUp
             )
         }

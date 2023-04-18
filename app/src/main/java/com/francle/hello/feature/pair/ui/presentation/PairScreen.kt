@@ -11,12 +11,12 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.francle.hello.core.ui.event.UiEvent
 import com.francle.hello.core.ui.theme.SpaceLarge
@@ -35,9 +35,9 @@ fun PairScreen(
     pairViewModel: PairViewModel = hiltViewModel()
 ) {
     // ViewModel State
-    val pairUser = pairViewModel.pairUser.collectAsState().value
-    val profileImageUrl = pairViewModel.profileImageUrl.collectAsState().value
-    val loading = pairViewModel.loading.collectAsState().value
+    val pairUser = pairViewModel.pairUser.collectAsStateWithLifecycle().value
+    val profileImageUrl = pairViewModel.profileImageUrl.collectAsStateWithLifecycle().value
+    val loading = pairViewModel.loading.collectAsStateWithLifecycle().value
 
     // Local Variables
     val context = LocalContext.current

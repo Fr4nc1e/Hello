@@ -1,10 +1,10 @@
-package com.francle.hello.feature.home.ui.presentation.components.postcard.viewmodel
+package com.francle.hello.feature.post.comment.ui.presentation.components.commentcard.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.francle.hello.core.data.call.Resource
 import com.francle.hello.core.util.Constants
-import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.event.PostCardEvent
+import com.francle.hello.feature.post.comment.ui.event.CommentCardEvent
 import com.francle.hello.feature.post.like.data.request.LikeRequest
 import com.francle.hello.feature.post.like.util.ForwardEntityType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,45 +12,44 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PostCardViewModel(
-    private val postCardInjectionsProvider: PostCardInjectionsProvider,
-    private val postId: String
+class CommentCardViewModel(
+    private val commentCardInjectionsProvider: CommentCardInjectionsProvider,
+    private val commentId: String
 ) : ViewModel() {
     private val _likeState = MutableStateFlow(false)
     val likeState = _likeState.asStateFlow()
 
     private val likeRepository
-        get() = postCardInjectionsProvider.likeRepository
+        get() = commentCardInjectionsProvider.likeRepository
 
     private val userId
-        get() = postCardInjectionsProvider.sharedPreferences.getString(Constants.KEY_USER_ID, "") ?: ""
+        get() = commentCardInjectionsProvider.sharedPreferences.getString(Constants.KEY_USER_ID, "") ?: ""
 
-    fun onEvent(event: PostCardEvent) {
+    fun onEvent(event: CommentCardEvent) {
         when (event) {
-            is PostCardEvent.ClickLikeButton -> {
+            CommentCardEvent.CheckLikeState -> {
+                checkLikeState()
+            }
+            is CommentCardEvent.ClickLikeButton -> {
                 when (_likeState.value) {
                     false -> {
-                        like(event.postUserId)
+                        like(event.commentUserId)
                     }
                     true -> {
-                        dislike(event.postUserId)
+                        dislike(event.commentUserId)
                     }
                 }
-            }
-
-            PostCardEvent.CheckLikeState -> {
-                checkLikeState()
             }
         }
     }
 
-    private fun dislike(postUserId: String) {
+    private fun dislike(commentUserId: String) {
         viewModelScope.launch {
             likeRepository.dislike(
                 arrowBackUserId = userId,
-                arrowForwardUserId = postUserId,
-                arrowForwardEntityId = postId,
-                arrowForwardEntityType = ForwardEntityType.POST.ordinal
+                arrowForwardUserId = commentUserId,
+                arrowForwardEntityId = commentId,
+                arrowForwardEntityType = ForwardEntityType.COMMENT.ordinal
             ).also {
                 when (it) {
                     is Resource.Error -> {
@@ -65,14 +64,14 @@ class PostCardViewModel(
         }
     }
 
-    private fun like(postUserId: String) {
+    private fun like(commentUserId: String) {
         viewModelScope.launch {
             likeRepository.like(
                 LikeRequest(
                     arrowBackUserId = userId,
-                    arrowForwardUserId = postUserId,
-                    arrowForwardEntityId = postId,
-                    arrowForwardEntityType = ForwardEntityType.POST.ordinal
+                    arrowForwardUserId = commentUserId,
+                    arrowForwardEntityId = commentId,
+                    arrowForwardEntityType = ForwardEntityType.COMMENT.ordinal
                 )
             ).also {
                 when (it) {
@@ -92,7 +91,7 @@ class PostCardViewModel(
         viewModelScope.launch {
             likeRepository.checkLikeState(
                 arrowBackUserId = userId,
-                arrowForwardEntityId = postId
+                arrowForwardEntityId = commentId
             ).also { result ->
                 when (result) {
                     is Resource.Error -> {}

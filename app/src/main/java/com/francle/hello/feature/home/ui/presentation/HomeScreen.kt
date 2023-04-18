@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Block
@@ -65,6 +65,7 @@ import com.francle.hello.feature.home.ui.presentation.components.HomeTopAppBar
 import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.PostCard
 import com.francle.hello.feature.home.ui.presentation.event.HomeEvent
 import com.francle.hello.feature.home.ui.viewmodel.HomeViewModel
+import com.francle.hello.feature.post.comment.domain.models.CommentType
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
@@ -74,6 +75,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     modifier: Modifier,
     snackbarHostState: SnackbarHostState,
+    lazyListState: LazyListState,
     onNavigate: (String) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -92,7 +94,6 @@ fun HomeScreen(
 
     // Local State
     val refreshState = rememberSwipeRefreshState(isRefreshing)
-    val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -111,13 +112,8 @@ fun HomeScreen(
         }
     }
 
-    LaunchedEffect(lifecycle) {
-        when (lifecycle) {
-            Lifecycle.Event.ON_START -> {
-                homeViewModel.onEvent(HomeEvent.UpdateProfileUrl)
-            }
-            else -> {}
-        }
+    LaunchedEffect(lifecycle == Lifecycle.Event.ON_START) {
+        homeViewModel.onEvent(HomeEvent.UpdateProfileUrl)
     }
 
     // LaunchEffect
@@ -141,14 +137,6 @@ fun HomeScreen(
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
-            // Top App Bar
-            HomeTopAppBar(
-                profileImageUrl = profileImageUrl,
-                onProfileImageClick = { onNavigate(Destination.Profile.route + "/$userId") },
-                onNotificationClick = { onNavigate(Destination.Notification.route) },
-                scrollBehavior = scrollBehavior
-            )
-
             // Loading Progress
             if (loading) {
                 Box(
@@ -162,6 +150,14 @@ fun HomeScreen(
                     }
                 }
             }
+
+            // Top App Bar
+            HomeTopAppBar(
+                profileImageUrl = profileImageUrl,
+                onProfileImageClick = { onNavigate(Destination.Profile.route + "/$userId") },
+                onNotificationClick = { onNavigate(Destination.Notification.route) },
+                scrollBehavior = scrollBehavior
+            )
 
             // Posts
             LazyColumn(
@@ -201,10 +197,17 @@ fun HomeScreen(
                             onMediaItemClick = { index ->
                                 onNavigate(
                                     Destination.FullScreenView.route +
-                                        "/${post.toJson()?.urlEncode()}" + "/$index"
+                                        "/${post.toJson()?.urlEncode()}" +
+                                        "/$index"
                                 )
                             },
-                            onCommentClick = {},
+                            onCommentClick = {
+                                onNavigate(
+                                    Destination.CreateComment.route + "/${post.id}" +
+                                        "/${post.userId}" +
+                                        "/${CommentType.POST.ordinal}"
+                                )
+                            },
                             onRepostClick = {},
                             onShareClick = {},
                             onProfileImageClick = {

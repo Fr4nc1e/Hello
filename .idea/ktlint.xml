@@ -7,6 +7,7 @@
         <option value="filename" />
         <option value="no-empty-first-line-in-method-block" />
         <option value="no-trailing-spaces" />
+        <option value="max-line-length" />
       </list>
     </disabledRules>
   </component>

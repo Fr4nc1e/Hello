@@ -1,36 +1,31 @@
 package com.francle.hello.feature.post.postdetail.ui.presentaion
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.HideSource
 import androidx.compose.material.icons.filled.PersonAddDisabled
-import androidx.compose.material.icons.filled.PhotoAlbum
 import androidx.compose.material.icons.filled.VerticalAlignTop
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -63,12 +58,12 @@ import com.francle.hello.core.ui.hub.presentation.navigation.util.urlEncode
 import com.francle.hello.core.ui.theme.SpaceMedium
 import com.francle.hello.core.ui.theme.SpaceSmall
 import com.francle.hello.core.ui.util.asString
+import com.francle.hello.feature.post.comment.domain.models.CommentType
 import com.francle.hello.feature.post.like.util.ForwardEntityType
-import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.BottomRow
-import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.HeadRow
-import com.francle.hello.feature.home.ui.presentation.components.postcard.ui.components.PostMediaContent
 import com.francle.hello.feature.post.postdetail.ui.event.DetailEvent
 import com.francle.hello.feature.post.postdetail.ui.presentaion.components.DetailTopAppBar
+import com.francle.hello.feature.post.postdetail.ui.presentaion.components.commentArea
+import com.francle.hello.feature.post.postdetail.ui.presentaion.components.postDetail
 import com.francle.hello.feature.post.postdetail.ui.viewmodel.PostDetailViewModel
 import kotlinx.coroutines.launch
 
@@ -83,16 +78,17 @@ fun PostDetailScreen(
 ) {
     // ViewModel State
     val post = postDetailViewModel.post.collectAsStateWithLifecycle().value
-    val inputComment = postDetailViewModel.inputComment.collectAsStateWithLifecycle().value.text
     val isOwnPost = postDetailViewModel.isOwnPost.collectAsStateWithLifecycle().value
     val likeState = postDetailViewModel.likeState.collectAsStateWithLifecycle().value
+    val comments = postDetailViewModel.comments.collectAsStateWithLifecycle().value
+    val loading = postDetailViewModel.likeState.collectAsStateWithLifecycle().value
+    val isEndReach = postDetailViewModel.isEndReach.collectAsStateWithLifecycle().value
 
     // Local State
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    val scrollState = rememberScrollState()
     val lifecycleOwner = LocalLifecycleOwner.current
     var lifecycle by remember { mutableStateOf(Lifecycle.Event.ON_CREATE) }
 
@@ -108,7 +104,7 @@ fun PostDetailScreen(
         }
     }
 
-    LaunchedEffect(lifecycle) {
+    LaunchedEffect(lifecycle == Lifecycle.Event.ON_START) {
         postDetailViewModel.onEvent(DetailEvent.CheckLikeState)
     }
 
@@ -142,102 +138,112 @@ fun PostDetailScreen(
                 scrollBehavior = scrollBehavior
             )
         },
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier.wrapContentHeight()
-            ) {
-                TextField(
-                    value = inputComment,
-                    onValueChange = {
-                        postDetailViewModel.onEvent(DetailEvent.InputComment(it))
-                    },
-                    modifier = Modifier.fillMaxSize(),
-                    placeholder = {
-                        Text(text = stringResource(R.string.comment_here))
-                    },
-                    trailingIcon = {
-                        Icon(imageVector = Icons.Filled.PhotoAlbum, contentDescription = null)
-                    },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.surface,
-                        unfocusedIndicatorColor = MaterialTheme.colorScheme.surface
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    postDetailViewModel.onEvent(
+                        DetailEvent.Navigate(
+                            Destination.CreateComment.route +
+                                "/${post?.id}" +
+                                "/${post?.userId}" +
+                                "/${CommentType.POST.ordinal}"
+                        )
                     )
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.AddCircle,
+                    contentDescription = null
                 )
             }
         }
     ) {
-        Surface(
+        LazyColumn(
             modifier = Modifier
                 .padding(it)
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .verticalScroll(scrollState)
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            contentPadding = PaddingValues(SpaceSmall),
+            verticalArrangement = Arrangement.spacedBy(SpaceSmall)
         ) {
-            Column(
-                modifier = Modifier.padding(SpaceSmall),
-                verticalArrangement = Arrangement.spacedBy(SpaceSmall)
-            ) {
-                post?.apply {
-                    HeadRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        profileImageUrl = profileImageUrl,
-                        username = username,
-                        hashTag = hashTag,
-                        onBottomSheetExpand = {
-                            scope.launch {
-                                postDetailViewModel.onEvent(DetailEvent.IsOwnPost(userId))
-                                bottomSheetState.expand()
-                            }
-                        },
-                        onProfileImageClick = {
-                            onNavigate(Destination.Profile.route + "/${post.userId}")
-                        }
-                    )
-
-                    postText?.let { text ->
-                        Text(
-                            text = text,
-                            modifier = Modifier.padding(horizontal = SpaceSmall)
+            postDetail(
+                modifier = Modifier.fillMaxWidth(),
+                post = post,
+                likeState = likeState,
+                onBottomSheetExpand = {
+                    scope.launch {
+                        postDetailViewModel.onEvent(
+                            DetailEvent.IsOwnPost(post?.userId ?: "")
                         )
+                        bottomSheetState.expand()
                     }
-
-                    PostMediaContent(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateContentSize(),
-                        postContentPairs = postContentPairs,
-                        onMediaItemClick = { index ->
-                            onNavigate(
-                                Destination.FullScreenView.route +
-                                    "/${post.toJson()?.urlEncode()}" + "/$index"
-                            )
-                        }
-                    )
-
-                    Column {
-                        Divider()
-                        BottomRow(
-                            modifier = Modifier.fillMaxWidth(),
-                            likeState = likeState,
-                            onCommentClick = {},
-                            onRepostClick = {},
-                            onLikeClick = {
-                                postDetailViewModel.onEvent(
-                                    DetailEvent.ClickLikeButton(
-                                        ForwardEntityType.POST.ordinal
-                                    )
-                                )
-                            },
-                            onShareClick = {}
+                },
+                onProfileImageClick = {
+                    postDetailViewModel.onEvent(
+                        DetailEvent.Navigate(
+                            Destination.Profile.route + "/${post?.userId}"
                         )
-                        Divider()
-                    }
+                    )
+                },
+                onMediaItemClick = { index ->
+                    postDetailViewModel.onEvent(
+                        DetailEvent.Navigate(
+                            Destination.FullScreenView.route +
+                                "/${post.toJson()?.urlEncode()}" + "/$index"
+                        )
+                    )
+                },
+                onCommentClick = {
+                    postDetailViewModel.onEvent(
+                        DetailEvent.Navigate(
+                            Destination.CreateComment.route + "/${post?.id}" +
+                                "/${post?.userId}" +
+                                "/${CommentType.POST.ordinal}"
+                        )
+                    )
+                },
+                onLikeClick = {
+                    postDetailViewModel.onEvent(
+                        DetailEvent.ClickLikeButton(
+                            ForwardEntityType.POST
+                        )
+                    )
                 }
-            }
+            )
+            
+            commentArea(
+                comments = comments,
+                onLoadItems = { index ->
+                    if (
+                        index >= comments.size - 1 &&
+                        !isEndReach &&
+                        !loading &&
+                        comments.size >= 20
+                    ) { postDetailViewModel.onEvent(DetailEvent.LoadItems) }
+                },
+                onBottomSheetExpand = {},
+                onMediaItemClick = {},
+                onCommentClick = { comment ->
+                    postDetailViewModel.onEvent(
+                        DetailEvent.Navigate(
+                            Destination.CreateComment.route +
+                                "/${comment.commentId}" +
+                                "/${comment.arrowBackUserId}" +
+                                "/${CommentType.COMMENT.ordinal}"
+                        )
+                    )
+                },
+                onRepostClick = {},
+                onShareClick = {},
+                onProfileImageClick = { route ->
+                    postDetailViewModel.onEvent(DetailEvent.Navigate(route))
+                }
+            )
+            
+            item { Spacer(modifier = Modifier.height(70.dp)) }
         }
     }
 
-    // Bottom Sheet
+    // bottom Sheet
     if (bottomSheetState.visible) {
         BottomSheetLayout(
             state = bottomSheetState,

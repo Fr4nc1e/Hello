@@ -41,8 +41,8 @@
     <string name="done">Done</string>
     <string name="type_here">Type here…</string>
     <string name="create_post_successfully">Create post successfully.</string>
-    <string name="text_content_empty">Post contents are empty.</string>
-    <string name="post_created_unsuccessfully">Post created unsuccessfully.</string>
+    <string name="text_content_empty">Both contents are empty.</string>
+    <string name="created_unsuccessfully">Created unsuccessfully.</string>
     <string name="can_not_be_all_empty">Can not be all empty.</string>
     <string name="delete_this_post">Delete this post.</string>
     <string name="put_this_post_on_the_top_of_profile">Put this post on the top of profile.</string>
@@ -66,4 +66,5 @@
     <string name="connected">Connected</string>
     <string name="edit_profile_successfully">Edit profile successfully.</string>
     <string name="edit_your_profile">Edit your profile</string>
+    <string name="create_comment">Create Comment</string>
 </resources>

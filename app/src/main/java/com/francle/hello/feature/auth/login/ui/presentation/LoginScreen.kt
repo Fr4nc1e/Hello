@@ -30,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,13 +40,14 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.francle.hello.R
-import com.francle.hello.feature.auth.splash.data.response.AuthResult
 import com.francle.hello.core.ui.hub.presentation.navigation.destination.Destination
 import com.francle.hello.core.ui.theme.SpaceLarge
 import com.francle.hello.core.ui.theme.SpaceMedium
 import com.francle.hello.feature.auth.login.ui.presentation.event.LoginEvent
 import com.francle.hello.feature.auth.login.ui.viewmodel.LoginViewModel
+import com.francle.hello.feature.auth.splash.data.response.AuthResult
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.StyledPlayerView
 
@@ -61,10 +61,10 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     // ViewModel Variables
-    val emailTextState = viewModel.email.collectAsState().value
-    val passwordTextState = viewModel.password.collectAsState().value
-    val loadingState = viewModel.loading.collectAsState().value
-    val isPasswordVisible = viewModel.isPasswordVisible.collectAsState().value
+    val emailTextState = viewModel.email.collectAsStateWithLifecycle().value
+    val passwordTextState = viewModel.password.collectAsStateWithLifecycle().value
+    val loadingState = viewModel.loading.collectAsStateWithLifecycle().value
+    val isPasswordVisible = viewModel.isPasswordVisible.collectAsStateWithLifecycle().value
     val context = LocalContext.current
 
     LaunchedEffect(viewModel, context) {

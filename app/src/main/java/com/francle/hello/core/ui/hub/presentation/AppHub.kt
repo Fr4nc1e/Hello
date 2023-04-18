@@ -2,8 +2,12 @@ package com.francle.hello.core.ui.hub.presentation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +31,7 @@ import com.francle.hello.core.ui.hub.presentation.navigation.Navigation
 import com.francle.hello.core.ui.hub.presentation.navigation.NavigationBottomBar
 import com.francle.hello.core.ui.hub.presentation.navigation.destination.Destination
 import com.francle.hello.core.ui.hub.viewmodel.AppHubViewModel
+import com.francle.hello.core.ui.util.isScrollingUp
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,6 +45,7 @@ fun AppHub(
         SnackbarHostState()
     }
     val curRoute = viewModel.curRoute.collectAsStateWithLifecycle().value
+    val lazyListState = rememberLazyListState()
 
     LaunchedEffect(navHostController) {
         navHostController.currentBackStackEntryFlow.collect { backStackEntry ->
@@ -53,11 +59,17 @@ fun AppHub(
         modifier = modifier,
         bottomBar = {
             if (viewModel.inList()) {
-                NavigationBottomBar(
-                    modifier = Modifier.fillMaxWidth(),
-                    curRoute = curRoute,
-                    navHostController = navHostController
-                )
+                AnimatedVisibility(
+                    visible = lazyListState.isScrollingUp(),
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    NavigationBottomBar(
+                        modifier = Modifier.fillMaxWidth(),
+                        curRoute = curRoute,
+                        navHostController = navHostController
+                    )
+                }
             }
         },
         snackbarHost = {
@@ -67,15 +79,21 @@ fun AppHub(
         },
         floatingActionButton = {
             if (curRoute == Destination.Home.route) {
-                FloatingActionButton(
-                    onClick = {
-                        navHostController.navigate(Destination.CreatePost.route)
-                    }
+                AnimatedVisibility(
+                    visible = lazyListState.isScrollingUp(),
+                    enter = fadeIn(),
+                    exit = fadeOut()
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.AddCircle,
-                        contentDescription = stringResource(R.string.create_post)
-                    )
+                    FloatingActionButton(
+                        onClick = {
+                            navHostController.navigate(Destination.CreatePost.route)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.AddCircle,
+                            contentDescription = stringResource(R.string.create_post)
+                        )
+                    }
                 }
             }
         },
@@ -84,6 +102,7 @@ fun AppHub(
         Navigation(
             modifier = Modifier.padding(it),
             navHostController = navHostController,
+            lazyListState = lazyListState,
             snackbarHostState = snackbarHostState
         )
     }

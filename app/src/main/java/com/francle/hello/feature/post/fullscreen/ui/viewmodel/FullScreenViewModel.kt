@@ -12,8 +12,8 @@ import com.francle.hello.core.ui.event.UiEvent
 import com.francle.hello.core.ui.hub.presentation.navigation.util.fromJson
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.core.util.Constants
-import com.francle.hello.feature.post.fullscreen.ui.presentation.event.FullScreenEvent
 import com.francle.hello.feature.home.domain.models.Post
+import com.francle.hello.feature.post.fullscreen.ui.presentation.event.FullScreenEvent
 import com.francle.hello.feature.post.like.data.request.LikeRequest
 import com.francle.hello.feature.post.like.domain.repository.LikeRepository
 import com.francle.hello.feature.post.like.util.ForwardEntityType

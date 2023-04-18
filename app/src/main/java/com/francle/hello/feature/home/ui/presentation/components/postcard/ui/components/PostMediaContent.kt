@@ -40,7 +40,6 @@ fun PostMediaContent(
     onMediaItemClick: (Int) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val retriever = homeViewModel.retriever
     Column(
         modifier = modifier,
         horizontalAlignment = CenterHorizontally,
@@ -82,6 +81,7 @@ fun PostMediaContent(
                                     .padding(SpaceSmall),
                                 contentAlignment = Center
                             ) {
+                                val retriever = homeViewModel.retriever
                                 val uri = it.postContentUrl?.toUri()
                                 retriever.setDataSource(uri.toString())
                                 val bitmap = retriever.getFrameAtTime(0)

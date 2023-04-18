@@ -1,4 +1,4 @@
-package com.francle.hello.feature.home.ui.presentation.components.postcard.viewmodel
+package com.francle.hello.feature.post.comment.ui.presentation.components.commentcard.viewmodel
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -7,16 +7,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun unifiedPostCardViewModel(postId: String): PostCardViewModel {
-    val postCardInjectionsProvider = hiltViewModel<PostCardInjectionsProvider>()
+fun unifiedCommentCardViewModel(commentId: String): CommentCardViewModel {
+    val commentCardInjectionsProvider = hiltViewModel<CommentCardInjectionsProvider>()
     return viewModel(
-        key = postId,
+        key = commentId,
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return PostCardViewModel(
-                    postCardInjectionsProvider,
-                    postId
+                return CommentCardViewModel(
+                    commentCardInjectionsProvider,
+                    commentId
                 ) as T
             }
         }

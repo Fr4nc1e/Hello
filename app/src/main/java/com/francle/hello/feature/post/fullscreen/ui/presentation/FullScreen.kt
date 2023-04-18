@@ -41,6 +41,7 @@ import com.francle.hello.R
 import com.francle.hello.core.ui.event.UiEvent
 import com.francle.hello.core.ui.hub.presentation.navigation.destination.Destination
 import com.francle.hello.core.ui.util.asString
+import com.francle.hello.feature.post.comment.domain.models.CommentType
 import com.francle.hello.feature.post.fullscreen.ui.presentation.components.FullScreenBottomBar
 import com.francle.hello.feature.post.fullscreen.ui.presentation.components.FullScreenTopAppBar
 import com.francle.hello.feature.post.fullscreen.ui.presentation.event.FullScreenEvent
@@ -159,7 +160,13 @@ fun FullScreen(
                 FullScreenBottomBar(
                     modifier = Modifier.fillMaxWidth(),
                     likeState = likeState,
-                    onCommentClick = {},
+                    onCommentClick = {
+                        onNavigate(
+                            Destination.CreateComment.route + "/${post.id}" +
+                                "/${post.userId}" +
+                                "/${CommentType.POST.ordinal}"
+                        )
+                    },
                     onRepostClick = {},
                     onLikeClick = {
                         fullScreenViewModel.onEvent(FullScreenEvent.ClickLikeButton)

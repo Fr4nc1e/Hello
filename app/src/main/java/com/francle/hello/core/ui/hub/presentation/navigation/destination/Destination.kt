@@ -8,6 +8,7 @@ sealed class Destination(val route: String) {
     object PostDetail : Destination("post_detail")
     object FullScreenView : Destination("full_screen")
     object CreatePost : Destination("create_post")
+    object CreateComment : Destination("create_comment")
     object Pair : Destination("pair")
     object Chat : Destination("chat")
     object Message : Destination("message")

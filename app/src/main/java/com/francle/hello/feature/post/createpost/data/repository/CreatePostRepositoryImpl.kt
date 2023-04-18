@@ -3,7 +3,6 @@ package com.francle.hello.feature.post.createpost.data.repository
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.francle.hello.R
 import com.francle.hello.core.data.call.Resource
 import com.francle.hello.core.data.file.getFileName
@@ -85,17 +84,15 @@ class CreatePostRepositoryImpl(
             } else if (e.code() == 500) {
                 Resource.Error(
                     data = null,
-                    message = UiText.StringResource(R.string.post_created_unsuccessfully)
+                    message = UiText.StringResource(R.string.created_unsuccessfully)
                 )
             } else {
-                Log.d("error", "http_error")
                 Resource.Error(
                     data = null,
                     message = UiText.StringResource(R.string.something_went_wrong)
                 )
             }
         } catch (e: Exception) {
-            Log.d("error", "other_error")
             Resource.Error(
                 data = null,
                 message = UiText.StringResource(R.string.something_went_wrong)
