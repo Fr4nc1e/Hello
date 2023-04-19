@@ -100,12 +100,9 @@ fun ProfileScreen(
         }
     }
 
-    LaunchedEffect(lifecycle) {
-        when (lifecycle) {
-            Lifecycle.Event.ON_START -> {
-                profileViewModel.getProfile(ownUserId)
-            }
-            else -> {}
+    LaunchedEffect((lifecycle == Lifecycle.Event.ON_START)) {
+        if (isOwnProfile) {
+            profileViewModel.getProfile(ownUserId)
         }
     }
 

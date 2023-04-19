@@ -11,7 +11,6 @@ sealed class Destination(val route: String) {
     object CreateComment : Destination("create_comment")
     object Pair : Destination("pair")
     object Chat : Destination("chat")
-    object Message : Destination("message")
     object Profile : Destination("profile")
     object EditProfile : Destination("edit_profile")
     object Notification : Destination("notification")

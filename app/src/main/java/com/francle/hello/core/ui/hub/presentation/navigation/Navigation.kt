@@ -17,7 +17,6 @@ import com.francle.hello.feature.auth.login.ui.presentation.LoginScreen
 import com.francle.hello.feature.auth.register.ui.presentation.RegisterScreen
 import com.francle.hello.feature.auth.splash.ui.presentation.SplashScreen
 import com.francle.hello.feature.communication.ui.presentation.chat.ChatScreen
-import com.francle.hello.feature.communication.ui.presentation.message.MessageScreen
 import com.francle.hello.feature.home.ui.presentation.HomeScreen
 import com.francle.hello.feature.notification.ui.presentation.NotificationScreen
 import com.francle.hello.feature.pair.ui.presentation.PairScreen
@@ -172,20 +171,6 @@ fun Navigation(
                 modifier = modifier.fillMaxSize(),
                 snackbarHostState = snackbarHostState,
                 onNavigate = navHostController::navigate
-            )
-        }
-        composable(
-            route = Destination.Message.route + "/channelId",
-            arguments = listOf(
-                navArgument(name = "channelId") {
-                    type = NavType.StringArrayType
-                }
-            )
-        ) {
-            MessageScreen(
-                snackbarHostState = snackbarHostState,
-                onNavigate = navHostController::navigate,
-                onNavigateUp = navHostController::navigateUp
             )
         }
         composable(

@@ -119,9 +119,7 @@ fun PostDetailScreen(
                     )
                 }
                 is UiEvent.Navigate -> { onNavigate(uiEvent.route) }
-                UiEvent.NavigateUp -> {
-                    onNavigateUp()
-                }
+                UiEvent.NavigateUp -> { onNavigateUp() }
 
                 else -> {}
             }

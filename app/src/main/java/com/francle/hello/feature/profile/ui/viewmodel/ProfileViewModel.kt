@@ -1,5 +1,6 @@
 package com.francle.hello.feature.profile.ui.viewmodel
 
+import android.app.Application
 import android.content.SharedPreferences
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -10,12 +11,15 @@ import com.francle.hello.core.ui.event.UiEvent
 import com.francle.hello.core.ui.hub.presentation.navigation.destination.Destination
 import com.francle.hello.core.ui.util.UiText
 import com.francle.hello.core.util.Constants
+import com.francle.hello.feature.communication.domain.repository.ChatRepository
+import com.francle.hello.feature.communication.ui.presentation.message.MessageActivity
 import com.francle.hello.feature.profile.domain.model.User
 import com.francle.hello.feature.profile.domain.repository.ProfileRepository
 import com.francle.hello.feature.profile.ui.event.ProfileEvent
 import com.francle.hello.feature.profile.ui.presentation.ProfileTabContent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.getstream.chat.android.client.ChatClient
+import io.getstream.chat.android.client.api.models.QueryChannelRequest
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -30,7 +34,9 @@ class ProfileViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val sharedPreferences: SharedPreferences,
     private val profileRepository: ProfileRepository,
-    private val client: ChatClient
+    private val chatRepository: ChatRepository,
+    private val client: ChatClient,
+    private val application: Application
 ) : ViewModel() {
     private val _user = MutableStateFlow<User?>(null)
     val user = _user.asStateFlow()
@@ -83,34 +89,78 @@ class ProfileViewModel @Inject constructor(
             }
 
             ProfileEvent.ClickMessage -> {
-                if (ChatClient.instance().getCurrentUser() == null) {
-                    client.connectUser(
-                        user = io.getstream.chat.android.client.models.User(
-                            id = sharedPreferences.getString(Constants.KEY_USER_ID, "") ?: "",
-                            name = sharedPreferences.getString(Constants.KEY_USER_NAME, "") ?: "",
-                            image = sharedPreferences.getString(Constants.KEY_PROFILE_IMAGE_URL, "")
-                                ?: ""
-                        ),
-                        token = sharedPreferences.getString(Constants.KEY_STREAM_TOKEN, "") ?: ""
-                    ).enqueue()
-                }
-
-                client.createChannel(
-                    channelType = "messaging",
-                    channelId = UUID.randomUUID().toString(),
-                    memberIds = listOf(
-                        _ownUserId.value,
-                        (_user.value?.userId ?: "")
-                    ),
-                    extraData = mapOf("name" to (_user.value?.username ?: "User"))
-                ).enqueue { result ->
-                    if (result.isSuccess) {
-                        viewModelScope.launch {
-                            _resultChannel.send(
-                                UiEvent.Navigate(
-                                    Destination.Message.route + "/${result.data().id}"
-                                )
-                            )
+                _user.value?.userId?.also { remoteUserId ->
+                    viewModelScope.launch {
+                        chatRepository.getChannelId(
+                            setOf(_ownUserId.value, remoteUserId)
+                        ).also { result ->
+                            when (result) {
+                                is Resource.Error -> {
+                                    result.message?.let {
+                                        _resultChannel.send(UiEvent.Message(it))
+                                    }
+                                }
+                                is Resource.Success -> {
+                                    val channelId = result.data
+                                    when (channelId == null) {
+                                        true -> {
+                                            val createdChannelId = UUID.randomUUID().toString()
+                                            chatRepository.createChatChannle(
+                                                memberIds = setOf(_ownUserId.value, remoteUserId),
+                                                streamChannelId = createdChannelId
+                                            ).also {
+                                                when (it) {
+                                                    is Resource.Error -> {
+                                                        result.message?.let { uiText ->
+                                                            _resultChannel.send(
+                                                                UiEvent.Message(uiText)
+                                                            )
+                                                        }
+                                                    }
+                                                    is Resource.Success -> {
+                                                        client.createChannel(
+                                                            channelType = "messaging",
+                                                            channelId = createdChannelId,
+                                                            memberIds = listOf(
+                                                                _ownUserId.value,
+                                                                (_user.value?.userId ?: "")
+                                                            ),
+                                                            extraData = mapOf(
+                                                                "name" to (_user.value?.username ?: "User")
+                                                            )
+                                                        ).enqueue { channelResult ->
+                                                            if (channelResult.isSuccess) {
+                                                                application.startActivity(
+                                                                    MessageActivity.createIntent(
+                                                                        application.applicationContext,
+                                                                        channelId = channelResult.data().cid,
+                                                                        messageId = null
+                                                                    )
+                                                                )
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        false -> {
+                                            client.queryChannel(
+                                                channelType = "messaging",
+                                                channelId = channelId,
+                                                request = QueryChannelRequest()
+                                            ).enqueue { channelResult ->
+                                                application.startActivity(
+                                                    MessageActivity.createIntent(
+                                                        application.applicationContext,
+                                                        channelId = channelResult.data().cid,
+                                                        messageId = null
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
